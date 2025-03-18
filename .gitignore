@@ -1,0 +1,42 @@
+# Node.js dependencies
+node_modules/
+
+# Environment variables
+.env
+
+# macOS system files
+.DS_Store
+
+# Xcode user data
+xcuserdata/
+*.xcuserstate
+
+# Xcode project workspace settings
+TestAppPhotoProcessing.xcodeproj/project.xcworkspace/xcuserdata/
+TestAppPhotoProcessing.xcodeproj/xcuserdata/
+
+# Xcode build files
+*.hmap
+.build/
+DerivedData/
+*.xcworkspace/
+
+# App packaging files
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Swift Playgrounds
+timeline.xctimeline
+playground.xcworkspace
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output/
+
+# CocoaPods (if used)
+Pods/
+
+
