@@ -25,7 +25,7 @@ struct TestAppPhotoProcessingApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            AuthContainerView()
         }
     }
 }
