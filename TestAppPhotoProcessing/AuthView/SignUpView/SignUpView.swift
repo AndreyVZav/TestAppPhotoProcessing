@@ -8,16 +8,7 @@
 import SwiftUI
 
 struct SignUpView: View {
-    @State private var email: String = ""
-    @State private var password: String = ""
-    @State private var authSuccess: Bool = false
-    @State private var errorMessage: String? = nil
-    
-    var viewModel: SignUpViewModelDelegate?
-    var onSignUpSuccess: (() -> Void)?
-    var onCancelTapped: (() -> Void)?
-    
-    var title = ""//
+    @ObservedObject var viewModel: SignUpViewModel
 
     var body: some View {
         GeometryReader { geometry in
@@ -47,12 +38,12 @@ struct SignUpView: View {
                 
                 VStack {
                     VStack {
-                        CustomTextFieldView(credentials: $email, color: .textField, textFieldTitle: "Email", isSecure: false)
-                        CustomTextFieldView(credentials: $password, color: .textField, textFieldTitle: "Password", isSecure: true)
+                        CustomTextFieldView(credentials: $viewModel.email, color: .textField, textFieldTitle: "Email", isSecure: false)
+                        CustomTextFieldView(credentials: $viewModel.password, color: .textField, textFieldTitle: "Password", isSecure: true)
                     }
                     .padding(.bottom, geometry.size.height * 0.1)
 
-                    if let errorMessage = errorMessage {
+                    if let errorMessage = viewModel.errorMessage {
                         Text(errorMessage)
                             .foregroundColor(.red)
                             .font(.footnote)
@@ -60,12 +51,12 @@ struct SignUpView: View {
 
                     CustomButtonView(title: "Done", action: {
                         Task {
-                            await signUpUser()
+                            await viewModel.signUp(email: viewModel.email, password: viewModel.password) { result in }
                         }
                     })
 
                     Button(action: {
-                        onCancelTapped?()
+                        viewModel.onCancelTapped?()
                     }) {
                         Text("Cancel")
                             .applyFont(.nunitoSans, .light, 15)
@@ -79,29 +70,9 @@ struct SignUpView: View {
         }
     }
     
-    private func signUpUser() async {
-        guard !email.isEmpty, !password.isEmpty else {
-            errorMessage = "Email and password cannot be empty."
-            return
-        }
-        errorMessage = nil
-        
-        await viewModel?.signUp(email: email, password: password, completion: { result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success:
-                    authSuccess = true
-                    onSignUpSuccess?()
-                    print("Sign-Up Successful")
-                case .failure(let error):
-                    authSuccess = false
-                    errorMessage = error.localizedDescription
-                    print("Error: \(error.localizedDescription)")
-                }
-            }
-        })
-    }
+     
 }
+
 #Preview {
-    SignUpView()
+    SignUpView(viewModel: SignUpViewModel(Dependencies.shared))
 }

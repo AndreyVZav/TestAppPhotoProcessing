@@ -9,17 +9,8 @@ import SwiftUI
 import GoogleSignInSwift
 
 struct LoginView: View {
+    @ObservedObject var viewModel: LoginViewModel
     @ObservedObject var googleSignInViewModel = GoogleSignInViewModel()
-    var viewModel: LoginViewModelDelegate?
-    var onLoginSuccess: (() -> Void)?
-    var onCancelTapped: (() -> Void)?
-    
-    @State private var email: String = ""
-    @State private var password: String = ""
-    @State private var authSuccess: Bool = false
-    @State private var errorMessage: String?
-    
-    var title = ""
     
     var body: some View {
         GeometryReader { geometry in
@@ -78,15 +69,15 @@ struct LoginView: View {
                 .padding(.trailing, width * 0.27)
                 .padding(.bottom, height * 0.02)
                 
-                CustomTextFieldView(credentials: $email, color: .textField, textFieldTitle: "Email", isSecure: false)
-                    .padding(.bottom, email.isEmpty ? height * 0.05 : height * 0.02)
+                CustomTextFieldView(credentials: $viewModel.email, color: .textField, textFieldTitle: "Email", isSecure: false)
+                    .padding(.bottom, viewModel.email.isEmpty ? height * 0.05 : height * 0.02)
                 
-                if !email.isEmpty {
-                    CustomTextFieldView(credentials: $password, color: .textField, textFieldTitle: "Password", isSecure: true)
+                if !viewModel.email.isEmpty {
+                    CustomTextFieldView(credentials: $viewModel.password, color: .textField, textFieldTitle: "Password", isSecure: true)
                         .padding(.bottom, height * 0.03)
                 }
                 
-                if let errorMessage = errorMessage {
+                if let errorMessage = viewModel.errorMessage {
                     Text(errorMessage)
                         .foregroundColor(.red)
                         .font(.footnote)
@@ -95,11 +86,11 @@ struct LoginView: View {
                 
                 VStack(spacing: 14) {
                     CustomButtonView(title: "Next", action: {
-                        loginUser()
+                        viewModel.login(email: viewModel.email, password: viewModel.password) { result in }
                     })
                     
                     Button(action: {
-                        onCancelTapped?()
+                        viewModel.onCancelTapped?()
                     }) {
                         Text("Cancel")
                             .applyFont(.nunitoSans, .light, 15)
@@ -112,31 +103,9 @@ struct LoginView: View {
         }
     }
     
-    private func loginUser() {
-        guard !email.isEmpty, !password.isEmpty else {
-            errorMessage = "Email and password cannot be empty."
-            return
-        }
-        
-        errorMessage = nil
-        
-        viewModel?.login(email: email, password: password, completion: { result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success:
-                    authSuccess = true
-                    onLoginSuccess?()
-                    print("Login Successful")
-                case .failure(let error):
-                    authSuccess = false
-                    errorMessage = error.localizedDescription
-                    print("Error: \(error.localizedDescription)")
-                }
-            }
-        })
-    }
+    
 }
 
 #Preview {
-    LoginView()
+    LoginView(viewModel: LoginViewModel(Dependencies.shared))
 }

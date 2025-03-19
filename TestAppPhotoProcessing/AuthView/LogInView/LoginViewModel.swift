@@ -13,10 +13,19 @@ protocol LoginViewModelDelegate: AnyObject {
 }
 
 
-final class LoginViewModel: LoginViewModelDelegate {
+final class LoginViewModel: ObservableObject, LoginViewModelDelegate {
+    @Published var email: String = ""
+    @Published var password: String = ""
+    
+    @Published var authSuccess: Bool = false
+    
+    @Published var errorMessage: String? = nil
+    
+    var onLoginSuccess: (() -> Void)?
+    var onCancelTapped: (() -> Void)?
+    
     private let authService: IAuthService
     private let userDefaultsRepository: IUserDefaultsRepository
-//    private let usersModel = UsersModel.shared
     
     init(_ dependencies: IDependencies) {
         self.authService = dependencies.authService
@@ -24,17 +33,27 @@ final class LoginViewModel: LoginViewModelDelegate {
     }
     
     func login(email: String, password: String, completion: @escaping (Result<Bool, AuthError>) -> Void) {
+        guard !email.isEmpty, !password.isEmpty else {
+            errorMessage = "Email and password cannot be empty."
+            return
+        }
         
-//        if let user = usersModel.findUser(byUsername: email), user.password == password {
-//            print("✅ Локальная авторизация успешна!")
-//            completion(.success(true))
-//            return
-//        }
+        errorMessage = nil
         
         Task {
             let result = await authService.logInWithEmail(email: email, password: password)
+            
             DispatchQueue.main.async {
-                completion(result)
+                switch result {
+                case .success:
+                    self.authSuccess = true
+                    self.onLoginSuccess?()
+                    completion(.success(true))
+                case .failure(let error):
+                    self.authSuccess = false
+                    self.errorMessage = error.localizedDescription
+                    completion(.failure(error))
+                }
             }
         }
     }
