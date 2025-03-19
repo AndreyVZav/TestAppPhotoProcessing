@@ -36,9 +36,22 @@
 		B598C6342D89B98E007E13AC /* TestAppPhotoProcessing.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestAppPhotoProcessing.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		B598C7ED2D8ABC7A007E13AC /* Exceptions for "TestAppPhotoProcessing" folder in "TestAppPhotoProcessing" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = B598C6332D89B98E007E13AC /* TestAppPhotoProcessing */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		B598C6362D89B98E007E13AC /* TestAppPhotoProcessing */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				B598C7ED2D8ABC7A007E13AC /* Exceptions for "TestAppPhotoProcessing" folder in "TestAppPhotoProcessing" target */,
+			);
 			path = TestAppPhotoProcessing;
 			sourceTree = "<group>";
 		};
@@ -331,6 +344,7 @@
 				DEVELOPMENT_TEAM = 22GRTKX5Z9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = TestAppPhotoProcessing/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -361,6 +375,7 @@
 				DEVELOPMENT_TEAM = 22GRTKX5Z9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = TestAppPhotoProcessing/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

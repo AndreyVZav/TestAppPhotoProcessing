@@ -6,8 +6,10 @@
 //
 
 import SwiftUI
+import GoogleSignInSwift
 
 struct LoginView: View {
+    @ObservedObject var googleSignInViewModel = GoogleSignInViewModel()
     var viewModel: LoginViewModelDelegate?
     var onLoginSuccess: (() -> Void)?
     var onCancelTapped: (() -> Void)?

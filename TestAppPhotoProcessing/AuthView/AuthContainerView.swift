@@ -41,5 +41,10 @@ struct AuthContainerView: View {
         }
         .animation(.easeInOut, value: isLoginShown)
         .transition(.slide)
+        
+        GoogleSignInButton {
+            print("Переход на главный экран после входа")
+        }
+        
     }
 }
