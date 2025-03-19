@@ -9,10 +9,13 @@ import SwiftUI
 
 struct AuthContainerView: View {
     @State private var isLoginShown = true
+    var onAuthSuccess: (() -> Void)?
     
     private let loginViewModel = LoginViewModel(Dependencies.shared)
-    private let signUpViewModel = SignUpViewModel(authService: Dependencies.shared.authService,
-                                                  userDefaultsRepository: Dependencies.shared.userDefaultsRepository)
+    private let signUpViewModel = SignUpViewModel(
+        authService: Dependencies.shared.authService,
+        userDefaultsRepository: Dependencies.shared.userDefaultsRepository
+    )
     
     var body: some View {
         VStack {
@@ -20,6 +23,7 @@ struct AuthContainerView: View {
                 LoginView(
                     viewModel: loginViewModel,
                     onLoginSuccess: {
+                        onAuthSuccess?()
                         print("✅ Пользователь вошел в систему")
                     },
                     onCancelTapped: {
@@ -31,7 +35,7 @@ struct AuthContainerView: View {
                     viewModel: signUpViewModel,
                     onSignUpSuccess: {
                         print("✅ Пользователь зарегистрировался")
-                        isLoginShown = true // Можно вернуть обратно на логин
+                        onAuthSuccess?()
                     },
                     onCancelTapped: {
                         isLoginShown = true // Вернуться на логин
