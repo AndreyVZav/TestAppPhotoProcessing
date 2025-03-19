@@ -14,15 +14,13 @@ protocol IDependencies {
 
 final class Dependencies: IDependencies {
     static let shared = Dependencies()
-
-    lazy var authService: IAuthService = {
-            return AuthService(userDefaultsRepository: self.userDefaultsRepository)
-        }()
     
-    let userDefaultsRepository: IUserDefaultsRepository
-
-    private init() {
-        
-        self.userDefaultsRepository = UserDefaultsRepository(container: .standard)
-    }
+    lazy var authService: IAuthService = {
+        return AuthService(userDefaultsRepository: self.userDefaultsRepository)
+    }()
+    
+    lazy var userDefaultsRepository: IUserDefaultsRepository = {
+        return UserDefaultsRepository(container: .standard)
+    }()
+    
 }

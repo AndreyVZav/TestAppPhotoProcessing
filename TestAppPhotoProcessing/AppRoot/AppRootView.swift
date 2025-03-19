@@ -7,15 +7,15 @@
 import SwiftUI
 
 struct AppRootView: View {
-    @State private var isAuthenticated = false
+    @StateObject private var viewModel = AppRootViewModel()
     
     var body: some View {
         NavigationStack {
-            if isAuthenticated {
+            if viewModel.isAuthenticated {
                 ImageEditorView()
             } else {
                 AuthContainerView(onAuthSuccess: {
-                    isAuthenticated = true
+                    viewModel.isAuthenticated = true
                 })
             }
         }

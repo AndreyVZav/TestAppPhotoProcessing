@@ -8,42 +8,45 @@
 import SwiftUI
 
 struct AuthContainerView: View {
-    @State private var isLoginShown = true
-    var onAuthSuccess: (() -> Void)?
+    @StateObject private var viewModel: AuthContainerViewModel
     
-    private let loginViewModel = LoginViewModel(Dependencies.shared)
-    private let signUpViewModel = SignUpViewModel(
-        authService: Dependencies.shared.authService,
-        userDefaultsRepository: Dependencies.shared.userDefaultsRepository
-    )
+    init(onAuthSuccess: (() -> Void)? = nil) {
+        let loginViewModel = LoginViewModel(Dependencies.shared)
+        let signUpViewModel = SignUpViewModel(Dependencies.shared)
+        _viewModel = StateObject(wrappedValue: AuthContainerViewModel(
+            loginViewModel: loginViewModel,
+            signUpViewModel: signUpViewModel,
+            onAuthSuccess: onAuthSuccess
+        ))
+    }
     
     var body: some View {
         VStack {
-            if isLoginShown {
+            if viewModel.isLoginShown {
                 LoginView(
-                    viewModel: loginViewModel,
+                    viewModel: viewModel.loginViewModel,
                     onLoginSuccess: {
-                        onAuthSuccess?()
+                        viewModel.handleAuthSuccess()
                         print("✅ Пользователь вошел в систему")
                     },
                     onCancelTapped: {
-                        isLoginShown = false // Переход на регистрацию
+                        viewModel.toggleAuthMode()
                     }
                 )
             } else {
                 SignUpView(
-                    viewModel: signUpViewModel,
+                    viewModel: viewModel.signUpViewModel,
                     onSignUpSuccess: {
                         print("✅ Пользователь зарегистрировался")
-                        onAuthSuccess?()
+                        viewModel.handleAuthSuccess()
                     },
                     onCancelTapped: {
-                        isLoginShown = true // Вернуться на логин
+                        viewModel.toggleAuthMode()
                     }
                 )
             }
         }
-        .animation(.easeInOut, value: isLoginShown)
+        .animation(.easeInOut, value: viewModel.isLoginShown)
         .transition(.slide)
         
         GoogleSignInButton {

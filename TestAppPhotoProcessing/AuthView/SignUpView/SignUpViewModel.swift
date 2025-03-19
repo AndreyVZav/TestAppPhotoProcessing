@@ -17,9 +17,9 @@ final class SignUpViewModel: SignUpViewModelDelegate {
     private let authService: IAuthService
     private let userDefaultsRepository: IUserDefaultsRepository
     
-    init(authService: IAuthService, userDefaultsRepository: IUserDefaultsRepository) {
-            self.authService = authService
-            self.userDefaultsRepository = userDefaultsRepository
+    init(_ dependencies: IDependencies) {
+        self.authService = dependencies.authService
+        self.userDefaultsRepository = dependencies.userDefaultsRepository
         }
     
   
