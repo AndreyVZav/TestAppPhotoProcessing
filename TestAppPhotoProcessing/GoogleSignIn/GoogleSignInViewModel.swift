@@ -13,6 +13,7 @@ import UIKit
 
 
 final class GoogleSignInViewModel: ObservableObject {
+    var onSuccess: (() -> Void) = {}
     
     func signInWithGoogle(completion: @escaping (Result<Bool, AuthError>) -> Void) {
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
@@ -26,18 +27,18 @@ final class GoogleSignInViewModel: ObservableObject {
                 completion(.failure(AuthError.map(error)))
                 return
             }
-
+            
             guard let user = result?.user,
                   let idToken = user.idToken?.tokenString else {
                 completion(.failure(.invalidCredential))
                 return
             }
-
+            
             let credential = GoogleAuthProvider.credential(
                 withIDToken: idToken,
                 accessToken: user.accessToken.tokenString
             )
-
+            
             Auth.auth().signIn(with: credential) { authResult, error in
                 if let error = error {
                     completion(.failure(.map(error)))

@@ -10,13 +10,22 @@ import Combine
 class AuthContainerViewModel: ObservableObject {
     @Published var isLoginShown = true
     var onAuthSuccess: (() -> Void)?
+    
     let loginViewModel: LoginViewModel
     let signUpViewModel: SignUpViewModel
+    let googleSignInViewModel: GoogleSignInViewModel
     
     init(loginViewModel: LoginViewModel, signUpViewModel: SignUpViewModel, onAuthSuccess: (() -> Void)? = nil) {
         self.loginViewModel = loginViewModel
         self.signUpViewModel = signUpViewModel
         self.onAuthSuccess = onAuthSuccess
+        
+        self.googleSignInViewModel = GoogleSignInViewModel()
+        
+        self.googleSignInViewModel.onSuccess = { [weak self] in
+            self?.handleAuthSuccess()
+            print("✅ Успешная авторизация через Google!")
+        }
     }
     
     func toggleAuthMode() {

@@ -7,18 +7,20 @@
 import SwiftUI
 
 struct GoogleSignInButton: View {
-    let viewModel = GoogleSignInViewModel()
-    var onSuccess: () -> Void = {}
-
+    @StateObject var viewModel: GoogleSignInViewModel
+    @State private var showErrorAlert = false
+    @State private var errorMessage: String = ""
+    
     var body: some View {
         Button(action: {
             viewModel.signInWithGoogle { result in
                 switch result {
                 case .success:
                     print("✅ Google авторизация успешна!")
-                    onSuccess()
+                    
                 case .failure(let error):
-                    print("❌ Ошибка входа: \(error.localizedDescription)")
+                    errorMessage = error.localizedDescription
+                    showErrorAlert = true
                 }
             }
         }) {
@@ -32,6 +34,12 @@ struct GoogleSignInButton: View {
             .background(Color.red)
             .cornerRadius(12)
         }
+        .alert("Ошибка", isPresented: $showErrorAlert) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(errorMessage)
+        }
+        
     }
 }
 
