@@ -50,7 +50,7 @@ final class LoginViewModel: ObservableObject, LoginViewModelDelegate {
         Task {
             let result = await authService.logInWithEmail(email: email, password: password)
             
-            DispatchQueue.main.async {
+            await MainActor.run {
                 switch result {
                 case .success:
                     self.authSuccess = true
