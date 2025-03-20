@@ -33,9 +33,9 @@ final class LoginViewModel: ObservableObject, LoginViewModelDelegate {
         self.googleSignInViewModel = GoogleSignInViewModel()
         
         self.googleSignInViewModel.onSuccess = { [weak self] in
-            self?.authSuccess = true
-            self?.onLoginSuccess?()
-        }
+                    self?.authSuccess = true
+                    self?.onLoginSuccess?()
+                }
         
     }
     

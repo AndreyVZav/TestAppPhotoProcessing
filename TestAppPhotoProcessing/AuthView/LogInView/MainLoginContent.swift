@@ -44,8 +44,7 @@ struct MainLoginContent: View {
             
             ActionButtons(viewModel: viewModel, height: height)
             
-            GoogleSignInButton(viewModel: viewModel.googleSignInViewModel)
-                .padding(.bottom, height * 0.1)
+
         }
         .frame(width: width)
     }

@@ -34,8 +34,11 @@ final class SignUpViewModel: ObservableObject, SignUpViewModelDelegate {
     
     
     func signUp(email: String, password: String, completion: @escaping (Result<Bool, AuthError>) -> Void) async {
+        
         guard !email.isEmpty, !password.isEmpty else {
-            errorMessage = "Email and password cannot be empty."
+            await MainActor.run {
+                errorMessage = "Email and password cannot be empty."
+            }
             return
         }
         
@@ -43,7 +46,7 @@ final class SignUpViewModel: ObservableObject, SignUpViewModelDelegate {
         
         let result = await authService.signUpWithEmailPassword(email: email, password: password)
         
-        DispatchQueue.main.async {
+        await MainActor.run {
             switch result {
             case .success:
                 self.authSuccess = true
