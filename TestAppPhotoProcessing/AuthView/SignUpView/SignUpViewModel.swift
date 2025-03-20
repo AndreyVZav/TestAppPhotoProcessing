@@ -31,7 +31,11 @@ final class SignUpViewModel: ObservableObject, SignUpViewModelDelegate {
         self.userDefaultsRepository = dependencies.userDefaultsRepository
     }
     
-    
+    func didTapSignUp() {
+        Task {
+            await signUp(email: email, password: password) { _ in }
+        }
+    }
     
     func signUp(email: String, password: String, completion: @escaping (Result<Bool, AuthError>) -> Void) async {
         

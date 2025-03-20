@@ -35,9 +35,7 @@ struct SignUpFormView: View {
             }
             
             CustomButtonView(title: "Done") {
-                Task {
-                    await viewModel.signUp(email: viewModel.email, password: viewModel.password) { _ in }
-                }
+                viewModel.onCancelTapped?()
             }
             
             Button(action: {
