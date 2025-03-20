@@ -29,6 +29,8 @@ final class SignUpViewModel: ObservableObject, SignUpViewModelDelegate {
     init(_ dependencies: IDependencies) {
         self.authService = dependencies.authService
         self.userDefaultsRepository = dependencies.userDefaultsRepository
+        
+        
     }
     
     func didTapSignUp() {

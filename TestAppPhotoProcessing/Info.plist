@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSCameraUsageDescription</key>
+	<string>для камеры</string>
 	<key>CLIENT_ID</key>
 	<string>641076579978-fibu9l3ef3c8e5vgqpo4gl5f8a5tpmos.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>

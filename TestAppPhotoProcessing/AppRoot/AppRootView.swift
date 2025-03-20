@@ -10,11 +10,13 @@ struct AppRootView: View {
     @StateObject private var viewModel = AppRootViewModel()
     
     var body: some View {
-        NavigationStack {
-            if viewModel.isAuthenticated {
-                ImageEditorView()
-            } else {
-                AuthContainerView(viewModel: viewModel.authContainerViewModel)
+        GeometryReader { geometry in
+            NavigationStack {
+                if viewModel.isAuthenticated {
+                    ImageEditorView(geometry: geometry)
+                } else {
+                    AuthContainerView(viewModel: viewModel.authContainerViewModel)
+                }
             }
         }
     }

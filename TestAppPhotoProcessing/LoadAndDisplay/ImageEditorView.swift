@@ -26,6 +26,8 @@ struct ImageEditorView: View {
     @State private var showSaveAlert = false
     @State private var saveSuccess = false
     
+    let geometry: GeometryProxy
+    
     var body: some View {
         VStack(spacing: 20) {
             Text("Photo Editor")
@@ -37,7 +39,7 @@ struct ImageEditorView: View {
                     Image(uiImage: image)
                         .resizable()
                         .scaledToFit()
-                        .frame(height: 300)
+                        .frame(height: geometry.size.height * 0.6)
                         .scaleEffect(scale)
                         .rotationEffect(rotation)
                         .gesture(
@@ -64,7 +66,7 @@ struct ImageEditorView: View {
                 
                 if showDrawing {
                     DrawingCanvasView(canvasView: $canvasView)
-                        .frame(height: 300)
+                        .frame(height: geometry.size.height * 0.6)
                         .cornerRadius(16)
                         .shadow(radius: 8)
                 }

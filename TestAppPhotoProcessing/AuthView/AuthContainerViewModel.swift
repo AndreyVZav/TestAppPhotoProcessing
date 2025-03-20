@@ -36,6 +36,10 @@ class AuthContainerViewModel: ObservableObject {
             self?.toggleAuthMode()
         }
         
+        self.signUpViewModel.onCancelTapped = { [weak self] in
+            self?.toggleAuthMode()
+        }
+        
         // Настройка замыкания для GoogleSignInViewModel
         self.googleSignInViewModel.onSuccess = { [weak self] in
             self?.handleAuthSuccess()
