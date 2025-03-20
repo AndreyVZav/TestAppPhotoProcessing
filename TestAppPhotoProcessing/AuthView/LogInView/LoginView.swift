@@ -69,11 +69,21 @@ struct LoginView: View {
                 .padding(.trailing, width * 0.27)
                 .padding(.bottom, height * 0.02)
                 
-                CustomTextFieldView(credentials: $viewModel.email, color: .textField, textFieldTitle: "Email", isSecure: false)
+                CustomTextFieldView(
+                    credentials: $viewModel.email,
+                    color: .textField,
+                    textFieldTitle: "Email",
+                    isSecure: false
+                )
                     .padding(.bottom, viewModel.email.isEmpty ? height * 0.05 : height * 0.02)
                 
                 if !viewModel.email.isEmpty {
-                    CustomTextFieldView(credentials: $viewModel.password, color: .textField, textFieldTitle: "Password", isSecure: true)
+                    CustomTextFieldView(
+                        credentials: $viewModel.password,
+                        color: .textField,
+                        textFieldTitle: "Password",
+                        isSecure: true
+                    )
                         .padding(.bottom, height * 0.03)
                 }
                 
@@ -86,7 +96,16 @@ struct LoginView: View {
                 
                 VStack(spacing: 14) {
                     CustomButtonView(title: "Next", action: {
-                        viewModel.login(email: viewModel.email, password: viewModel.password) { result in }
+                        viewModel.login(email: viewModel.email, password: viewModel.password) { result in
+                            
+                            switch result {
+                            case .success:
+                                print("✅ Вход выполнен успешно!")
+                            case .failure(let error):
+                                print("❌ Ошибка входа: \(error.localizedDescription)")
+                            }
+                            
+                        }
                     })
                     
                     Button(action: {

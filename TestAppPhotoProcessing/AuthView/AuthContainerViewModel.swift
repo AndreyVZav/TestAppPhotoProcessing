@@ -27,6 +27,11 @@ class AuthContainerViewModel: ObservableObject {
             print("✅ Успешная авторизация через Google!")
         }
         
+        self.loginViewModel.onLoginSuccess = { [weak self] in
+            self?.handleAuthSuccess()
+            print("✅ Успешная авторизация через email!")
+        }
+        
         self.loginViewModel.onCancelTapped = { [weak self] in
             self?.toggleAuthMode()
         }

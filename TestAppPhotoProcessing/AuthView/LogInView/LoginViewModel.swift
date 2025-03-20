@@ -16,9 +16,7 @@ protocol LoginViewModelDelegate: AnyObject {
 final class LoginViewModel: ObservableObject, LoginViewModelDelegate {
     @Published var email: String = ""
     @Published var password: String = ""
-    
     @Published var authSuccess: Bool = false
-    
     @Published var errorMessage: String? = nil
     
     var onLoginSuccess: (() -> Void)?
