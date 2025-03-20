@@ -14,25 +14,27 @@ struct EditorControlsView: View {
     let saveAction: () -> Void
     
     var body: some View {
-        VStack(spacing: 16) {
-            Button {
-                sourceType = .photoLibrary
-                showImagePicker = true
-            } label: {
-                Label("Gallery", systemImage: "photo.on.rectangle")
-            }
-            
-            Button {
-                sourceType = .camera
-                showImagePicker = true
-            } label: {
-                Label("Camera", systemImage: "camera")
-            }
-            
-            Button {
-                showDrawing.toggle()
-            } label: {
-                Label(showDrawing ? "Photo" : "Draw", systemImage: "pencil.tip")
+        VStack {
+            HStack(spacing: 16) {
+                Button {
+                    sourceType = .photoLibrary
+                    showImagePicker = true
+                } label: {
+                    Label("Gallery", systemImage: "photo.on.rectangle")
+                }
+                
+                Button {
+                    sourceType = .camera
+                    showImagePicker = true
+                } label: {
+                    Label("Camera", systemImage: "camera")
+                }
+                
+                Button {
+                    showDrawing.toggle()
+                } label: {
+                    Label(showDrawing ? "Photo" : "Draw", systemImage: "pencil.tip")
+                }
             }
             
             Button {
