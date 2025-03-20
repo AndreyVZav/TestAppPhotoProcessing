@@ -19,6 +19,8 @@ final class LoginViewModel: ObservableObject, LoginViewModelDelegate {
     @Published var authSuccess: Bool = false
     @Published var errorMessage: String? = nil
     
+    let googleSignInViewModel: GoogleSignInViewModel
+    
     var onLoginSuccess: (() -> Void)?
     var onCancelTapped: (() -> Void)?
     
@@ -28,6 +30,13 @@ final class LoginViewModel: ObservableObject, LoginViewModelDelegate {
     init(_ dependencies: IDependencies) {
         self.authService = dependencies.authService
         self.userDefaultsRepository = dependencies.userDefaultsRepository
+        self.googleSignInViewModel = GoogleSignInViewModel()
+        
+        self.googleSignInViewModel.onSuccess = { [weak self] in
+            self?.authSuccess = true
+            self?.onLoginSuccess?()
+        }
+        
     }
     
     func login(email: String, password: String, completion: @escaping (Result<Bool, AuthError>) -> Void) {
