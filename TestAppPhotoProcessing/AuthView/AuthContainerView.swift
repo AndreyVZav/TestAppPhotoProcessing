@@ -8,47 +8,23 @@
 import SwiftUI
 
 struct AuthContainerView: View {
-    @State private var isLoginShown = true
-    var onAuthSuccess: (() -> Void)?
-    
-    private let loginViewModel = LoginViewModel(Dependencies.shared)
-    private let signUpViewModel = SignUpViewModel(
-        authService: Dependencies.shared.authService,
-        userDefaultsRepository: Dependencies.shared.userDefaultsRepository
-    )
+    @StateObject var viewModel: AuthContainerViewModel
     
     var body: some View {
         VStack {
-            if isLoginShown {
-                LoginView(
-                    viewModel: loginViewModel,
-                    onLoginSuccess: {
-                        onAuthSuccess?()
-                        print("✅ Пользователь вошел в систему")
-                    },
-                    onCancelTapped: {
-                        isLoginShown = false // Переход на регистрацию
-                    }
-                )
+            if viewModel.isLoginShown {
+                LoginView(viewModel: viewModel.loginViewModel)
             } else {
-                SignUpView(
-                    viewModel: signUpViewModel,
-                    onSignUpSuccess: {
-                        print("✅ Пользователь зарегистрировался")
-                        onAuthSuccess?()
-                    },
-                    onCancelTapped: {
-                        isLoginShown = true // Вернуться на логин
-                    }
-                )
+                SignUpView(viewModel: viewModel.signUpViewModel)
             }
+            
+            GoogleSignInButton(viewModel: viewModel.googleSignInViewModel)
+            
         }
-        .animation(.easeInOut, value: isLoginShown)
+        .animation(.easeInOut, value: viewModel.isLoginShown)
         .transition(.slide)
         
-        GoogleSignInButton {
-            print("Переход на главный экран после входа")
-        }
         
     }
 }
+

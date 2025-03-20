@@ -7,16 +7,16 @@
 import SwiftUI
 
 struct AppRootView: View {
-    @State private var isAuthenticated = false
+    @StateObject private var viewModel = AppRootViewModel()
     
     var body: some View {
-        NavigationStack {
-            if isAuthenticated {
-                ImageEditorView()
-            } else {
-                AuthContainerView(onAuthSuccess: {
-                    isAuthenticated = true
-                })
+        GeometryReader { geometry in
+            NavigationStack {
+                if viewModel.isAuthenticated {
+                    ImageEditorView(geometry: geometry)
+                } else {
+                    AuthContainerView(viewModel: viewModel.authContainerViewModel)
+                }
             }
         }
     }

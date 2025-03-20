@@ -17,8 +17,6 @@ struct CustomButtonView:View{
                     .foregroundColor(.startButtonTitle)
             }
             
-                
-            
         }
         .frame(width:335,height: 61)
         .background(Color.mainBlue)

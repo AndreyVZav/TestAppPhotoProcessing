@@ -2,8 +2,18 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>&lt;key&gt;NSPhotoLibraryAddUsageDescription&lt;/key&gt;</key>
-	<string>&lt;string&gt;Для сохранения изображений в галерею&lt;/string&gt;</string>
+	<key>NSCameraUsageDescription</key>
+	<string>для камеры</string>
+	<key>CLIENT_ID</key>
+	<string>641076579978-fibu9l3ef3c8e5vgqpo4gl5f8a5tpmos.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.641076579978-fibu9l3ef3c8e5vgqpo4gl5f8a5tpmos</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>TestAppPhotoProcessing</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Для сохранения изображений в галерею</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
