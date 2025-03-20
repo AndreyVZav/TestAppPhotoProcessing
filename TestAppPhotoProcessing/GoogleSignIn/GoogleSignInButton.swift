@@ -13,7 +13,13 @@ struct GoogleSignInButton: View {
     
     var body: some View {
         Button(action: {
-            viewModel.signInWithGoogle { result in
+            guard let rootViewController = UIApplication.shared.windows.first?.rootViewController else {
+                errorMessage = "Не удалось получить UIViewController"
+                showErrorAlert = true
+                return
+            }
+            
+            viewModel.signInWithGoogle(presenting: rootViewController) { result in
                 switch result {
                 case .success:
                     print("✅ Google авторизация успешна!")

@@ -15,35 +15,34 @@ import UIKit
 final class GoogleSignInViewModel: ObservableObject {
     var onSuccess: (() -> Void) = {}
     
-    func signInWithGoogle(completion: @escaping (Result<Bool, AuthError>) -> Void) {
-        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-              let rootViewController = windowScene.windows.first?.rootViewController else {
-            completion(.failure(.providerError))
+    func signInWithGoogle(presenting viewController: UIViewController, completion: @escaping (Result<AuthDataResult, Error>) -> Void) {
+        guard let clientID = FirebaseApp.app()?.options.clientID else {
+            completion(.failure(NSError(domain: "Auth", code: -1, userInfo: [NSLocalizedDescriptionKey: "Не удалось получить Client ID"])))
             return
         }
-        
-        GIDSignIn.sharedInstance.signIn(withPresenting: rootViewController) { result, error in
+
+        let config = GIDConfiguration(clientID: clientID)
+        GIDSignIn.sharedInstance.configuration = config
+
+        GIDSignIn.sharedInstance.signIn(withPresenting: viewController) { result, error in
             if let error = error {
-                completion(.failure(AuthError.map(error)))
+                completion(.failure(error))
                 return
             }
-            
+
             guard let user = result?.user,
                   let idToken = user.idToken?.tokenString else {
-                completion(.failure(.invalidCredential))
+                completion(.failure(NSError(domain: "Auth", code: -1, userInfo: [NSLocalizedDescriptionKey: "Не удалось получить токен"])))
                 return
             }
-            
-            let credential = GoogleAuthProvider.credential(
-                withIDToken: idToken,
-                accessToken: user.accessToken.tokenString
-            )
-            
+
+            let credential = GoogleAuthProvider.credential(withIDToken: idToken, accessToken: user.accessToken.tokenString)
+
             Auth.auth().signIn(with: credential) { authResult, error in
                 if let error = error {
-                    completion(.failure(.map(error)))
-                } else {
-                    completion(.success(true))
+                    completion(.failure(error))
+                } else if let authResult = authResult {
+                    completion(.success(authResult))
                 }
             }
         }
