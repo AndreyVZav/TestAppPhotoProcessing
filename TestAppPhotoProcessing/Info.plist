@@ -2,8 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>&lt;key&gt;NSPhotoLibraryAddUsageDescription&lt;/key&gt;</key>
-	<string>&lt;string&gt;Для сохранения изображений в галерею&lt;/string&gt;</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Для сохранения изображений в галерею</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>

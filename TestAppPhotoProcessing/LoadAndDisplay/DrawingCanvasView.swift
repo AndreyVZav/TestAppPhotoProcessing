@@ -12,6 +12,7 @@ struct DrawingCanvasView: UIViewRepresentable {
     
     func makeUIView(context: Context) -> PKCanvasView {
         canvasView.drawingPolicy = .anyInput
+        canvasView.backgroundColor = .clear
         return canvasView
     }
     
