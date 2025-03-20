@@ -16,6 +16,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         FirebaseApp.configure()
         print("Firebase configured")
+        print(FirebaseApp.app()?.options.clientID ?? "clientID is nil")
         
 #if DEBUG// временно чтобы работал вход по паролю
         let providerFactory = AppCheckDebugProviderFactory()
