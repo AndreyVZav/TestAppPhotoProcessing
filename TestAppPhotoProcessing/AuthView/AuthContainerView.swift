@@ -8,17 +8,7 @@
 import SwiftUI
 
 struct AuthContainerView: View {
-    @StateObject private var viewModel: AuthContainerViewModel
-    
-    init(onAuthSuccess: (() -> Void)? = nil) {
-        let loginViewModel = LoginViewModel(Dependencies.shared)
-        let signUpViewModel = SignUpViewModel(Dependencies.shared)
-        _viewModel = StateObject(wrappedValue: AuthContainerViewModel(
-            loginViewModel: loginViewModel,
-            signUpViewModel: signUpViewModel,
-            onAuthSuccess: onAuthSuccess
-        ))
-    }
+    @StateObject var viewModel: AuthContainerViewModel
     
     var body: some View {
         VStack {

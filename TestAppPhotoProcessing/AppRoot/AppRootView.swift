@@ -14,9 +14,7 @@ struct AppRootView: View {
             if viewModel.isAuthenticated {
                 ImageEditorView()
             } else {
-                AuthContainerView(onAuthSuccess: {
-                    viewModel.isAuthenticated = true
-                })
+                AuthContainerView(viewModel: viewModel.authContainerViewModel)
             }
         }
     }
