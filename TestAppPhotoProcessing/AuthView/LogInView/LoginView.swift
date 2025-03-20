@@ -98,6 +98,10 @@ struct LoginView: View {
                     }
                 }
                 .padding(.bottom, height * 0.3)
+                
+                GoogleSignInButton(viewModel: googleSignInViewModel)
+                    .padding(.bottom, height * 0.1)
+                
             }
             .frame(width: width)
         }

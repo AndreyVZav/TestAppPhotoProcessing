@@ -26,6 +26,17 @@ class AuthContainerViewModel: ObservableObject {
             self?.handleAuthSuccess()
             print("✅ Успешная авторизация через Google!")
         }
+        
+        self.loginViewModel.onCancelTapped = { [weak self] in
+            self?.toggleAuthMode()
+        }
+        
+        // Настройка замыкания для GoogleSignInViewModel
+        self.googleSignInViewModel.onSuccess = { [weak self] in
+            self?.handleAuthSuccess()
+            print("✅ Успешная авторизация через Google!")
+        }
+        
     }
     
     func toggleAuthMode() {

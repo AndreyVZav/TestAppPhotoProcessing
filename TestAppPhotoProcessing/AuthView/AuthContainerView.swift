@@ -23,27 +23,9 @@ struct AuthContainerView: View {
     var body: some View {
         VStack {
             if viewModel.isLoginShown {
-                LoginView(
-                    viewModel: viewModel.loginViewModel,
-                    onLoginSuccess: {
-                        viewModel.handleAuthSuccess()
-                        print("✅ Пользователь вошел в систему")
-                    },
-                    onCancelTapped: {
-                        viewModel.toggleAuthMode()
-                    }
-                )
+                LoginView(viewModel: viewModel.loginViewModel)
             } else {
-                SignUpView(
-                    viewModel: viewModel.signUpViewModel,
-                    onSignUpSuccess: {
-                        print("✅ Пользователь зарегистрировался")
-                        viewModel.handleAuthSuccess()
-                    },
-                    onCancelTapped: {
-                        viewModel.toggleAuthMode()
-                    }
-                )
+                SignUpView(viewModel: viewModel.signUpViewModel)
             }
             
             GoogleSignInButton(viewModel: viewModel.googleSignInViewModel)
