@@ -18,7 +18,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         print("Firebase configured")
         print(FirebaseApp.app()?.options.clientID ?? "clientID is nil")
         
-#if DEBUG// временно чтобы работал вход по паролю
+#if DEBUG// временно чтобы работал вход по паролю на симуляторе
         let providerFactory = AppCheckDebugProviderFactory()
         AppCheck.setAppCheckProviderFactory(providerFactory)
         #endif

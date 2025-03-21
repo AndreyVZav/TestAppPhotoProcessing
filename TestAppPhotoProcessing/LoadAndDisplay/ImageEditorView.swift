@@ -8,6 +8,11 @@ import SwiftUI
 import PencilKit
 
 struct ImageEditorView: View {
+    @State private var drawingUndoStack: [PKDrawing] = []
+    
+    @StateObject private var textVM = TextEditorViewModel()
+    @State private var selectedTextID: UUID?
+    
     @State private var showImagePicker = false
     @State private var selectedImage: UIImage?
     @State private var sourceType: UIImagePickerController.SourceType = .photoLibrary
@@ -69,14 +74,39 @@ struct ImageEditorView: View {
                         .frame(height: geometry.size.height * 0.6)
                         .cornerRadius(16)
                         .shadow(radius: 8)
+                        .onChange(of: canvasView.drawing) { newDrawing in
+                            drawingUndoStack.append(newDrawing)
+                        }
                 }
+                
+                ForEach($textVM.textOverlays) { $overlay in
+                    EditableTextOverlayView(overlay: $overlay)
+                        .onTapGesture {
+                            selectedTextID = overlay.id
+                        }
+                }
+                .overlay(alignment: .bottom) {
+                    VStack(spacing: 8) {
+                        Button("Добавить текст") {
+                            textVM.addTextOverlay()
+                        }
+                        if let id = selectedTextID,
+                           let index = textVM.textOverlays.firstIndex(where: { $0.id == id }) {
+                            TextEditorControlsView(selectedText: $textVM.textOverlays[index])
+                        }
+                    }
+                    .padding()
+                }
+                
             }
             
             EditorControlsView(
                 sourceType: $sourceType,
                 showImagePicker: $showImagePicker,
                 showDrawing: $showDrawing,
-                saveAction: saveEditedImage
+                saveAction: saveEditedImage,
+                undoAction: undoLastAction,
+                exitAction: exitApp
             )
         }
         .sheet(isPresented: $showImagePicker) {
@@ -92,7 +122,20 @@ struct ImageEditorView: View {
         .padding()
     }
     
-    // 📸 Сохранение изображения
+    private func undoLastAction() {
+        if !textVM.textOverlays.isEmpty {
+            textVM.textOverlays.removeLast()
+        } else if !drawingUndoStack.isEmpty {
+            drawingUndoStack.removeLast()
+            canvasView.drawing = drawingUndoStack.last ?? PKDrawing()
+        }
+    }
+    
+    private func exitApp() {
+        exit(0)
+    }
+    
+    // сохранение изображения
     private func saveEditedImage() {
         guard let baseImage = selectedImage else { return }
         
@@ -104,6 +147,23 @@ struct ImageEditorView: View {
         // масштабируем canvas
         let drawing = canvasView.drawing.image(from: canvasView.bounds, scale: 1.0)
         drawing.draw(in: CGRect(origin: .zero, size: size))
+        
+        // Текстовые слои
+        for overlay in textVM.textOverlays {
+            let attributes: [NSAttributedString.Key: Any] = [
+                .font: UIFont(name: overlay.fontName, size: overlay.fontSize) ?? UIFont.systemFont(ofSize: overlay.fontSize),
+                .foregroundColor: UIColor(overlay.textColor)
+            ]
+            let attributedText = NSAttributedString(string: overlay.text, attributes: attributes)
+            
+            let textSize = attributedText.size()
+            let position = overlay.position
+            let textRect = CGRect(
+                origin: CGPoint(x: position.x - textSize.width / 2, y: position.y - textSize.height / 2),
+                size: textSize
+            )
+            attributedText.draw(in: textRect)
+        }
         
         let finalImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()

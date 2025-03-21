@@ -10,10 +10,12 @@ struct GoogleSignInButton: View {
     @StateObject var viewModel: GoogleSignInViewModel
     @State private var showErrorAlert = false
     @State private var errorMessage: String = ""
+    var onAuthSuccess: () -> Void
     
     var body: some View {
         Button(action: {
-            guard let rootViewController = UIApplication.shared.windows.first?.rootViewController else {
+            guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                  let rootViewController = windowScene.windows.first?.rootViewController else {
                 errorMessage = "Не удалось получить UIViewController"
                 showErrorAlert = true
                 return
@@ -23,7 +25,7 @@ struct GoogleSignInButton: View {
                 switch result {
                 case .success:
                     print("✅ Google авторизация успешна!")
-                    
+                    onAuthSuccess()
                 case .failure(let error):
                     errorMessage = error.localizedDescription
                     showErrorAlert = true
