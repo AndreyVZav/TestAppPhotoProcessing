@@ -18,7 +18,10 @@ struct AuthContainerView: View {
                 SignUpView(viewModel: viewModel.signUpViewModel)
             }
             
-            GoogleSignInButton(viewModel: viewModel.googleSignInViewModel)
+            GoogleSignInButton(
+                viewModel: GoogleSignInViewModel(),
+                onAuthSuccess: viewModel.onAuthSuccess ?? {}
+            )
             
         }
         .animation(.easeInOut, value: viewModel.isLoginShown)

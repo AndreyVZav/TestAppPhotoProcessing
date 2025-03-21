@@ -5,6 +5,7 @@
 //  Created by Андрей Завадский on 20.03.2025.
 //
 import SwiftUI
+import PencilKit
 
 struct EditorControlsView: View {
     @Binding var sourceType: UIImagePickerController.SourceType
@@ -12,6 +13,8 @@ struct EditorControlsView: View {
     @Binding var showDrawing: Bool
     
     let saveAction: () -> Void
+    let undoAction: () -> Void
+    let exitAction: () -> Void
     
     var body: some View {
         VStack {
@@ -42,6 +45,12 @@ struct EditorControlsView: View {
             } label: {
                 Label("Save", systemImage: "square.and.arrow.down")
             }
+            
+            Button("Undo", action: undoAction)
+            
+            Button("Выход", action: exitAction)
+                                .foregroundColor(.red)
+            
         }
         .buttonStyle(.borderedProminent)
     }
