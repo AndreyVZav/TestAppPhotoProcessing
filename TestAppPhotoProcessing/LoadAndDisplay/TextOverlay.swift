@@ -15,3 +15,13 @@ struct TextOverlay: Identifiable {
     var textColor: Color
     var position: CGPoint
 }
+
+extension TextOverlay {
+    static let preview = TextOverlay(
+        text: "Новый текст",
+        fontSize: 24,
+        fontName: "Helvetica",
+        textColor: .white,
+        position: CGPoint(x: 150, y: 150)
+    )
+}

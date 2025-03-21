@@ -26,5 +26,15 @@ struct EditableTextOverlayView: View {
                         overlay.position.y += value.translation.height
                     }
             )
+            .border(.red)
     }
+}
+
+#Preview {
+    @Previewable @State var overlay: TextOverlay = .preview
+    ZStack {
+        Color.red
+        EditableTextOverlayView(overlay: $overlay)
+    }
+    .padding()
 }

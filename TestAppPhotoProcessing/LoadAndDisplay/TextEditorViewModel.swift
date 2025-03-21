@@ -8,7 +8,18 @@
 import SwiftUI
 
 class TextEditorViewModel: ObservableObject {
-    @Published var textOverlays: [TextOverlay] = []
+    @Published var textOverlays: [TextOverlay]
+    @Published var selectedID: UUID?
+    
+    init(
+        textOverlays: [TextOverlay] = []
+    ) {
+        self.textOverlays = textOverlays
+    }
+    
+    func tapOverlay(withID id: UUID) {
+        selectedID = id
+    }
     
     func addTextOverlay() {
         let newText = TextOverlay(

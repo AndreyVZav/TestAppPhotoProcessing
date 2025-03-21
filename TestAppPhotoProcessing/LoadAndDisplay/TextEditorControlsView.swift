@@ -8,6 +8,7 @@ import SwiftUI
 
 struct TextEditorControlsView: View {
     @Binding var selectedText: TextOverlay
+    @Binding var selectedTextID: UUID?
     
     var body: some View {
         VStack(spacing: 12) {
@@ -26,9 +27,16 @@ struct TextEditorControlsView: View {
                 Text("Times New Roman").tag("Times New Roman")
             }
             .pickerStyle(.segmented)
+            
+            Button("Закрыть") {
+                selectedTextID = nil
+            }
+            .padding(.top, 8)
+            
         }
         .padding()
         .background(.ultraThinMaterial)
         .cornerRadius(12)
     }
 }
+

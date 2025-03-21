@@ -48,22 +48,22 @@ struct ImageEditorView: View {
                         .scaleEffect(scale)
                         .rotationEffect(rotation)
                         .gesture(
-                            MagnificationGesture()
-                                .onChanged {
-                                    scale = lastScale * $0
-                                }
-                                .onEnded { _ in
-                                    lastScale = scale
-                                }
-                        )
-                        .gesture(
-                            RotationGesture()
-                                .onChanged {
-                                    rotation = lastRotation + $0
-                                }
-                                .onEnded { _ in
-                                    lastRotation = rotation
-                                }
+                            SimultaneousGesture(
+                                MagnificationGesture()
+                                    .onChanged { value in
+                                        scale = lastScale * value
+                                    }
+                                    .onEnded { _ in
+                                        lastScale = scale
+                                    },
+                                RotationGesture()
+                                    .onChanged { value in
+                                        rotation = lastRotation + value
+                                    }
+                                    .onEnded { _ in
+                                        lastRotation = rotation
+                                    }
+                            )
                         )
                         .cornerRadius(16)
                         .shadow(radius: 8)
@@ -74,7 +74,7 @@ struct ImageEditorView: View {
                         .frame(height: geometry.size.height * 0.6)
                         .cornerRadius(16)
                         .shadow(radius: 8)
-                        .onChange(of: canvasView.drawing) { newDrawing in
+                        .onChange(of: canvasView.drawing) {_, newDrawing in
                             drawingUndoStack.append(newDrawing)
                         }
                 }
@@ -85,19 +85,22 @@ struct ImageEditorView: View {
                             selectedTextID = overlay.id
                         }
                 }
-                .overlay(alignment: .bottom) {
-                    VStack(spacing: 8) {
-                        Button("Добавить текст") {
-                            textVM.addTextOverlay()
-                        }
-                        if let id = selectedTextID,
-                           let index = textVM.textOverlays.firstIndex(where: { $0.id == id }) {
-                            TextEditorControlsView(selectedText: $textVM.textOverlays[index])
-                        }
-                    }
-                    .padding()
-                }
                 
+            }
+            .overlay(alignment: .bottom) {
+                VStack(spacing: 8) {
+                    Button("Добавить текст") {
+                        textVM.addTextOverlay()
+                    }
+                    if let id = selectedTextID,
+                       let index = textVM.textOverlays.firstIndex(where: { $0.id == id }) {
+                        TextEditorControlsView(
+                            selectedText: $textVM.textOverlays[index],
+                            selectedTextID: $selectedTextID
+                        )
+                    }
+                }
+                .padding()
             }
             
             EditorControlsView(
@@ -123,12 +126,8 @@ struct ImageEditorView: View {
     }
     
     private func undoLastAction() {
-        if !textVM.textOverlays.isEmpty {
-            textVM.textOverlays.removeLast()
-        } else if !drawingUndoStack.isEmpty {
-            drawingUndoStack.removeLast()
-            canvasView.drawing = drawingUndoStack.last ?? PKDrawing()
-        }
+        canvasView.drawing = PKDrawing()
+        drawingUndoStack = [canvasView.drawing]
     }
     
     private func exitApp() {
