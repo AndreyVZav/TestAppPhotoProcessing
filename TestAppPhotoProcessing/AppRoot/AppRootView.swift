@@ -8,7 +8,8 @@ import SwiftUI
 
 struct AppRootView: View {
     @StateObject private var viewModel = AppRootViewModel()
-    
+
+    // Test comment
     var body: some View {
         GeometryReader { geometry in
             NavigationStack {
