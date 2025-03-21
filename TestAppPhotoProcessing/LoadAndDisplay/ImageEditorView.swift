@@ -48,22 +48,23 @@ struct ImageEditorView: View {
                         .scaleEffect(scale)
                         .rotationEffect(rotation)
                         .gesture(
-                            SimultaneousGesture(
-                                MagnificationGesture()
-                                    .onChanged { value in
-                                        scale = lastScale * value
-                                    }
-                                    .onEnded { _ in
-                                        lastScale = scale
-                                    },
-                                RotationGesture()
-                                    .onChanged { value in
-                                        rotation = lastRotation + value
-                                    }
-                                    .onEnded { _ in
-                                        lastRotation = rotation
-                                    }
-                            )
+                            MagnificationGesture()
+                                .onChanged { value in
+                                    scale = lastScale * value
+                                }
+                                .onEnded { _ in
+                                    lastScale = scale
+                                }
+                        )
+                        .gesture(
+                            RotationGesture()
+                                .onChanged { value in
+                                    rotation = lastRotation + value
+                                }
+                                .onEnded { _ in
+                                    lastRotation = rotation
+                                }
+                            
                         )
                         .cornerRadius(16)
                         .shadow(radius: 8)
