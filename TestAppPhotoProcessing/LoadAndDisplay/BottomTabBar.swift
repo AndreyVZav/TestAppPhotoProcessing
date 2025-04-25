@@ -20,6 +20,7 @@ struct BottomTabBar: View {
             }) {
                 Image(systemName: "photo.on.rectangle")
             }
+            .frame(maxWidth: .infinity)
             
             Button(action: {
                 viewModel.sourceType = .camera
@@ -27,24 +28,28 @@ struct BottomTabBar: View {
             }) {
                 Image(systemName: "camera")
             }
+            .frame(maxWidth: .infinity)
             
             Button(action: {
                 viewModel.showDrawing.toggle()
             }) {
                 Image(systemName: "pencil.tip")
             }
+            .frame(maxWidth: .infinity)
             
             Button(action: {
                 saveAction()
             }) {
                 Image(systemName: "square.and.arrow.down")
             }
+            .frame(maxWidth: .infinity)
             
             Button(action: {
                 undoAction()
             }) {
                 Image(systemName: "arrow.uturn.backward")
             }
+            .frame(maxWidth: .infinity)
             
             Button(action: {
                 viewModel.exitApp()
@@ -52,8 +57,10 @@ struct BottomTabBar: View {
                 Image(systemName: "xmark.circle")
                     .foregroundColor(.red)
             }
+            .frame(maxWidth: .infinity)
         }
         .padding()
+        .frame(maxWidth: .infinity)
         .background(.ultraThinMaterial)
         .clipShape(RoundedRectangle(cornerRadius: 24))
         .shadow(radius: 10)

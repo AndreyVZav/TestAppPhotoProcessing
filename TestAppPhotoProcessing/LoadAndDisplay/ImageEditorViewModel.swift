@@ -16,10 +16,26 @@ class ImageEditorViewModel: ObservableObject {
     @Published var drawingUndoStack: [PKDrawing] = []
     @Published var showSaveAlert = false
     @Published var saveSuccess = false
+    @Published var actionsStack: [EditAction] = []
     
-    func undoLastAction() {
-        canvasView.drawing = PKDrawing()
-        drawingUndoStack = [canvasView.drawing]
+    enum EditAction {
+        case drawing(PKDrawing)
+        case text(UUID) // текстовое действие связано с id текста
+    }
+    
+    
+    
+    func undoLastAction(textVM: TextEditorViewModel) {
+        guard let lastAction = actionsStack.popLast() else { return }
+        
+        switch lastAction {
+        case .drawing(let previousDrawing):
+            canvasView.drawing = previousDrawing
+        case .text(let textID):
+            if let index = textVM.textOverlays.firstIndex(where: { $0.id == textID }) {
+                textVM.textOverlays.remove(at: index)
+            }
+        }
     }
     
     func exitApp() {

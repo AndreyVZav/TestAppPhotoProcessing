@@ -21,7 +21,7 @@ class TextEditorViewModel: ObservableObject {
         selectedID = id
     }
     
-    func addTextOverlay() {
+    func addTextOverlay() -> TextOverlay {
         let newText = TextOverlay(
             text: "Новый текст",
             fontSize: 24,
@@ -30,6 +30,7 @@ class TextEditorViewModel: ObservableObject {
             position: CGPoint(x: 150, y: 150)
         )
         textOverlays.append(newText)
+        return newText
     }
     
     func updateText(_ overlay: TextOverlay, newText: String) {

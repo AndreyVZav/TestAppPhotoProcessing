@@ -19,6 +19,7 @@ struct ImageEditorView: View {
             Text("Photo Editor")
                 .font(.largeTitle)
                 .bold()
+                .padding(.top)
             
             ZStack {
                 if let image = viewModel.selectedImage {
@@ -35,8 +36,8 @@ struct ImageEditorView: View {
                         .frame(height: geometry.size.height * 0.6)
                         .cornerRadius(16)
                         .shadow(radius: 8)
-                        .onChange(of: viewModel.canvasView.drawing) {_, newDrawing in
-                            viewModel.drawingUndoStack.append(newDrawing)
+                        .onChange(of: viewModel.canvasView.drawing) { oldDrawing, newDrawing in
+                            viewModel.actionsStack.append(.drawing(oldDrawing))
                         }
                 }
                 
@@ -51,7 +52,8 @@ struct ImageEditorView: View {
             .overlay(alignment: .bottom) {
                 VStack(spacing: 8) {
                     Button("Добавить текст") {
-                        textVM.addTextOverlay()
+                        let newOverlay = textVM.addTextOverlay()
+                        viewModel.actionsStack.append(.text(newOverlay.id))
                     }
                     if let id = selectedTextID,
                        let index = textVM.textOverlays.firstIndex(where: { $0.id == id }) {
@@ -69,9 +71,10 @@ struct ImageEditorView: View {
             BottomTabBar(
                 viewModel: viewModel,
                 saveAction: { viewModel.saveEditedImage(textOverlays: textVM.textOverlays) },
-                undoAction: viewModel.undoLastAction,
+                undoAction: { viewModel.undoLastAction(textVM: textVM) }
             )
-            .frame(height: 70)
+            .frame(maxWidth: .infinity , minHeight: 70)
+            
         }
         .sheet(isPresented: $viewModel.showImagePicker) {
             ImagePicker(selectedImage: $viewModel.selectedImage, sourceType: viewModel.sourceType)
