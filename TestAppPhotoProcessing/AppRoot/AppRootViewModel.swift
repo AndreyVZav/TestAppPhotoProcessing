@@ -10,6 +10,7 @@ import Combine
 class AppRootViewModel: ObservableObject {
     @Published var isAuthenticated = false
     let authContainerViewModel: AuthContainerViewModel
+    let imageEditorViewModel = ImageEditorViewModel()
     
     init() {
         let loginVM = LoginViewModel(Dependencies.shared)
