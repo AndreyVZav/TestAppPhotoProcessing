@@ -8,28 +8,9 @@ import SwiftUI
 import PencilKit
 
 struct ImageEditorView: View {
-    @State private var drawingUndoStack: [PKDrawing] = []
-    
+    @ObservedObject var viewModel: ImageEditorViewModel
     @StateObject private var textVM = TextEditorViewModel()
     @State private var selectedTextID: UUID?
-    
-    @State private var showImagePicker = false
-    @State private var selectedImage: UIImage?
-    @State private var sourceType: UIImagePickerController.SourceType = .photoLibrary
-    
-    // Жесты
-    @State private var scale: CGFloat = 1.0
-    @State private var lastScale: CGFloat = 1.0
-    
-    @State private var rotation: Angle = .zero
-    @State private var lastRotation: Angle = .zero
-    
-    // PencilKit
-    @State private var canvasView = PKCanvasView()
-    @State private var showDrawing = false
-    
-    @State private var showSaveAlert = false
-    @State private var saveSuccess = false
     
     let geometry: GeometryProxy
     
@@ -40,43 +21,22 @@ struct ImageEditorView: View {
                 .bold()
             
             ZStack {
-                if let image = selectedImage {
+                if let image = viewModel.selectedImage {
                     Image(uiImage: image)
                         .resizable()
                         .scaledToFit()
                         .frame(height: geometry.size.height * 0.6)
-                        .scaleEffect(scale)
-                        .rotationEffect(rotation)
-                        .gesture(
-                            MagnificationGesture()
-                                .onChanged { value in
-                                    scale = lastScale * value
-                                }
-                                .onEnded { _ in
-                                    lastScale = scale
-                                }
-                        )
-                        .gesture(
-                            RotationGesture()
-                                .onChanged { value in
-                                    rotation = lastRotation + value
-                                }
-                                .onEnded { _ in
-                                    lastRotation = rotation
-                                }
-                            
-                        )
                         .cornerRadius(16)
                         .shadow(radius: 8)
                 }
                 
-                if showDrawing {
-                    DrawingCanvasView(canvasView: $canvasView)
+                if viewModel.showDrawing {
+                    DrawingCanvasView(canvasView: $viewModel.canvasView)
                         .frame(height: geometry.size.height * 0.6)
                         .cornerRadius(16)
                         .shadow(radius: 8)
-                        .onChange(of: canvasView.drawing) {_, newDrawing in
-                            drawingUndoStack.append(newDrawing)
+                        .onChange(of: viewModel.canvasView.drawing) {_, newDrawing in
+                            viewModel.drawingUndoStack.append(newDrawing)
                         }
                 }
                 
@@ -104,76 +64,39 @@ struct ImageEditorView: View {
                 .padding()
             }
             
+            Spacer()
+            
             BottomTabBar(
-                sourceType: $sourceType,
-                showImagePicker: $showImagePicker,
-                showDrawing: $showDrawing,
-                saveAction: saveEditedImage,
-                undoAction: undoLastAction,
-                exitAction: exitApp
+                viewModel: viewModel,
+                saveAction: { viewModel.saveEditedImage(textOverlays: textVM.textOverlays) },
+                undoAction: viewModel.undoLastAction,
             )
+            .frame(height: 70)
         }
-        .sheet(isPresented: $showImagePicker) {
-            ImagePicker(selectedImage: $selectedImage, sourceType: sourceType)
+        .sheet(isPresented: $viewModel.showImagePicker) {
+            ImagePicker(selectedImage: $viewModel.selectedImage, sourceType: viewModel.sourceType)
         }
-        .alert(isPresented: $showSaveAlert) {
+        .alert(isPresented: $viewModel.showSaveAlert) {
             Alert(
-                title: Text(saveSuccess ? "Saved!" : "Error"),
-                message: Text(saveSuccess ? "Image saved to Photos." : "Failed to save image."),
+                title: Text(viewModel.saveSuccess ? "Saved!" : "Error"),
+                message: Text(viewModel.saveSuccess ? "Image saved to Photos." : "Failed to save image."),
                 dismissButton: .default(Text("OK"))
             )
         }
         .padding()
     }
     
-    private func undoLastAction() {
-        canvasView.drawing = PKDrawing()
-        drawingUndoStack = [canvasView.drawing]
-    }
-    
-    private func exitApp() {
-        exit(0)
-    }
-    
-    // сохранение изображения
-    private func saveEditedImage() {
-        guard let baseImage = selectedImage else { return }
-        
-        // объединяем рисунок и изображение
-        let size = baseImage.size
-        UIGraphicsBeginImageContextWithOptions(size, false, 0)
-        baseImage.draw(in: CGRect(origin: .zero, size: size))
-        
-        // масштабируем canvas
-        let drawing = canvasView.drawing.image(from: canvasView.bounds, scale: 1.0)
-        drawing.draw(in: CGRect(origin: .zero, size: size))
-        
-        // Текстовые слои
-        for overlay in textVM.textOverlays {
-            let attributes: [NSAttributedString.Key: Any] = [
-                .font: UIFont(name: overlay.fontName, size: overlay.fontSize) ?? UIFont.systemFont(ofSize: overlay.fontSize),
-                .foregroundColor: UIColor(overlay.textColor)
-            ]
-            let attributedText = NSAttributedString(string: overlay.text, attributes: attributes)
-            
-            let textSize = attributedText.size()
-            let position = overlay.position
-            let textRect = CGRect(
-                origin: CGPoint(x: position.x - textSize.width / 2, y: position.y - textSize.height / 2),
-                size: textSize
+}
+
+
+struct ImageEditorView_Previews: PreviewProvider {
+    static var previews: some View {
+        GeometryReader { geometry in
+            ImageEditorView(
+                viewModel: ImageEditorViewModel(),
+                geometry: geometry
             )
-            attributedText.draw(in: textRect)
         }
-        
-        let finalImage = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        
-        if finalImage != nil {
-            UIImageWriteToSavedPhotosAlbum(finalImage!, nil, nil, nil)
-            saveSuccess = true
-        } else {
-            saveSuccess = false
-        }
-        showSaveAlert = true
     }
 }
+

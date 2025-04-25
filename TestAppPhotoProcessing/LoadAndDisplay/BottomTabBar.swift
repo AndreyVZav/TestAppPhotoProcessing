@@ -7,71 +7,56 @@
 import SwiftUI
 
 struct BottomTabBar: View {
-    @Binding var sourceType: UIImagePickerController.SourceType
-    @Binding var showImagePicker: Bool
-    @Binding var showDrawing: Bool
-    
+    @ObservedObject var viewModel: ImageEditorViewModel
     var saveAction: () -> Void
     var undoAction: () -> Void
-    var exitAction: () -> Void
     
     var body: some View {
-        TabView {
-            Button {
-                sourceType = .photoLibrary
-                showImagePicker = true
-            } label: {
-                Image(systemName: "photo.on.rectangle")
-            }
-            .tabItem {
+        HStack {
+    
+            Button(action: {
+                viewModel.sourceType = .photoLibrary
+                viewModel.showImagePicker = true
+            }) {
                 Image(systemName: "photo.on.rectangle")
             }
             
-            Button {
-                sourceType = .camera
-                showImagePicker = true
-            } label: {
-                Image(systemName: "camera")
-            }
-            .tabItem {
+            Button(action: {
+                viewModel.sourceType = .camera
+                viewModel.showImagePicker = true
+            }) {
                 Image(systemName: "camera")
             }
             
-            Button {
-                showDrawing.toggle()
-            } label: {
-                Image(systemName: "pencil.tip")
-            }
-            .tabItem {
+            Button(action: {
+                viewModel.showDrawing.toggle()
+            }) {
                 Image(systemName: "pencil.tip")
             }
             
-            Button {
+            Button(action: {
                 saveAction()
-            } label: {
-                Image(systemName: "square.and.arrow.down")
-            }
-            .tabItem {
+            }) {
                 Image(systemName: "square.and.arrow.down")
             }
             
-            Button {
+            Button(action: {
                 undoAction()
-            } label: {
-                Image(systemName: "arrow.uturn.backward")
-            }
-            .tabItem {
+            }) {
                 Image(systemName: "arrow.uturn.backward")
             }
             
-            Button {
-                exitAction()
-            } label: {
+            Button(action: {
+                viewModel.exitApp()
+            }) {
                 Image(systemName: "xmark.circle")
-            }
-            .tabItem {
-                Image(systemName: "xmark.circle")
+                    .foregroundColor(.red)
             }
         }
+        .padding()
+        .background(.ultraThinMaterial)
+        .clipShape(RoundedRectangle(cornerRadius: 24))
+        .shadow(radius: 10)
+        .padding(.horizontal)
     }
 }

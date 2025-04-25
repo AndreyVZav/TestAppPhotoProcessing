@@ -13,7 +13,7 @@ struct AppRootView: View {
         GeometryReader { geometry in
             NavigationStack {
                 if viewModel.isAuthenticated {
-                    ImageEditorView(geometry: geometry)
+                    ImageEditorView(viewModel: viewModel.imageEditorViewModel, geometry: geometry)
                 } else {
                     AuthContainerView(viewModel: viewModel.authContainerViewModel)
                 }
