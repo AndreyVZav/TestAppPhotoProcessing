@@ -104,7 +104,7 @@ struct ImageEditorView: View {
                 .padding()
             }
             
-            EditorControlsView(
+            BottomTabBar(
                 sourceType: $sourceType,
                 showImagePicker: $showImagePicker,
                 showDrawing: $showDrawing,
