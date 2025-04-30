@@ -26,7 +26,7 @@ class TextEditorViewModel: ObservableObject {
             text: "Новый текст",
             fontSize: 24,
             fontName: "Helvetica",
-            textColor: .white,
+            textColor: .black,
             position: CGPoint(x: 150, y: 150)
         )
         textOverlays.append(newText)

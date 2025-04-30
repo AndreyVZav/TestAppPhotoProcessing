@@ -21,7 +21,7 @@ extension TextOverlay {
         text: "Новый текст",
         fontSize: 24,
         fontName: "Helvetica",
-        textColor: .white,
+        textColor: .blue,
         position: CGPoint(x: 150, y: 150)
     )
 }

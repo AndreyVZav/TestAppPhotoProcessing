@@ -17,6 +17,11 @@ struct SignUpView: View {
                 SignUpFormView(viewModel: viewModel, geometry: geometry)
             }
             .frame(width: geometry.size.width, height: geometry.size.height)
+            .alert("Registration successful!", isPresented: $viewModel.showSuccessAlert) {
+                Button("OK") {
+                        viewModel.onCancelTapped?() 
+                    }
+            }
         }
     }
     

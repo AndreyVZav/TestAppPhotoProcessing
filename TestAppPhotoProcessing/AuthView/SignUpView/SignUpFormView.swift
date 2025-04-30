@@ -35,7 +35,7 @@ struct SignUpFormView: View {
             }
             
             CustomButtonView(title: "Done") {
-                viewModel.onCancelTapped?()
+                viewModel.didTapSignUp()
             }
             
             Button(action: {
