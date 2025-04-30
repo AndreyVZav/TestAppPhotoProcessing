@@ -18,7 +18,7 @@ final class SignUpViewModel: ObservableObject, SignUpViewModelDelegate {
     
     @Published var authSuccess: Bool = false
     @Published var errorMessage: String? = nil
-    
+    @Published var showSuccessAlert = false
     var onSignUpSuccess: (() -> Void)?
     var onCancelTapped: (() -> Void)?
     
@@ -33,6 +33,22 @@ final class SignUpViewModel: ObservableObject, SignUpViewModelDelegate {
         
     }
     
+    func validateCredentials() -> String? {
+        if email.isEmpty || password.isEmpty {
+            return "Email and password cannot be empty."
+        }
+        
+        if !email.contains("@") || !email.contains(".") {
+            return "Please enter a valid email."
+        }
+        
+        if password.count < 6 {
+            return "Password must be at least 6 characters."
+        }
+        
+        return nil // всё ок
+    }
+    
     func didTapSignUp() {
         Task {
             await signUp(email: email, password: password) { _ in }
@@ -41,14 +57,13 @@ final class SignUpViewModel: ObservableObject, SignUpViewModelDelegate {
     
     func signUp(email: String, password: String, completion: @escaping (Result<Bool, AuthError>) -> Void) async {
         
-        guard !email.isEmpty, !password.isEmpty else {
+        let validationError = validateCredentials()
+        if let validationError = validationError {
             await MainActor.run {
-                errorMessage = "Email and password cannot be empty."
+                errorMessage = validationError
             }
             return
         }
-        
-        errorMessage = nil
         
         let result = await authService.signUpWithEmailPassword(email: email, password: password)
         
@@ -56,6 +71,7 @@ final class SignUpViewModel: ObservableObject, SignUpViewModelDelegate {
             switch result {
             case .success:
                 self.authSuccess = true
+                self.showSuccessAlert = true
                 self.onSignUpSuccess?()
                 completion(.success(true))
             case .failure(let error):
