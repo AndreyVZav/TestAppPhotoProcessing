@@ -39,22 +39,23 @@ struct ImageEditorView: View {
                         .scaleEffect(imageScale * currentMagnification) // 🔧 масштаб
                         .rotationEffect(imageRotation + currentRotation) // 🔧 поворот
                         .gesture(
-                            MagnificationGesture()
-                                .updating($currentMagnification) { value, state, _ in
-                                    state = value
-                                }
-                                .onEnded { value in
-                                    imageScale *= value
-                                }
-                        )
-                        .gesture(
-                            RotationGesture()
-                                .updating($currentRotation) { value, state, _ in
-                                    state = value
-                                }
-                                .onEnded { value in
-                                    imageRotation += value
-                                }
+                            SimultaneousGesture(
+                                MagnificationGesture()
+                                    .updating($currentMagnification) { value, state, _ in
+                                        state = value
+                                    }
+                                    .onEnded { value in
+                                        imageScale *= value
+                                    },
+                                
+                                RotationGesture()
+                                    .updating($currentRotation) { value, state, _ in
+                                        state = value
+                                    }
+                                    .onEnded { value in
+                                        imageRotation += value
+                                    }
+                            )
                         )
                         .cornerRadius(16)
                         .shadow(radius: 8)
