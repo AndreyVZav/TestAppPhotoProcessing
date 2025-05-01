@@ -14,6 +14,13 @@ struct ImageEditorView: View {
     
     let geometry: GeometryProxy
     
+    // 🔧 Добавлено масштабирование и поворот изображения
+    @State private var imageScale: CGFloat = 1.0
+    @GestureState private var currentMagnification: CGFloat = 1.0
+    
+    @State private var imageRotation: Angle = .zero
+    @GestureState private var currentRotation: Angle = .zero
+    
     var body: some View {
         VStack(spacing: 20) {
             Text("Photo Editor")
@@ -21,14 +28,39 @@ struct ImageEditorView: View {
                 .bold()
                 .padding(.top)
             
+            
+            
             ZStack {
                 if let image = viewModel.selectedImage {
                     Image(uiImage: image)
                         .resizable()
                         .scaledToFit()
                         .frame(height: geometry.size.height * 0.6)
+                        .scaleEffect(imageScale * currentMagnification) // 🔧 масштаб
+                        .rotationEffect(imageRotation + currentRotation) // 🔧 поворот
+                        .gesture(
+                            SimultaneousGesture(
+                                MagnificationGesture()
+                                    .updating($currentMagnification) { value, state, _ in
+                                        state = value
+                                    }
+                                    .onEnded { value in
+                                        imageScale *= value
+                                    },
+                                
+                                RotationGesture()
+                                    .updating($currentRotation) { value, state, _ in
+                                        state = value
+                                    }
+                                    .onEnded { value in
+                                        imageRotation += value
+                                    }
+                            )
+                        )
                         .cornerRadius(16)
                         .shadow(radius: 8)
+                    
+                    
                 }
                 
                 if viewModel.showDrawing {
@@ -36,9 +68,7 @@ struct ImageEditorView: View {
                         .frame(height: geometry.size.height * 0.6)
                         .cornerRadius(16)
                         .shadow(radius: 8)
-                        .onChange(of: viewModel.canvasView.drawing) { oldDrawing, newDrawing in
-                            viewModel.actionsStack.append(.drawing(oldDrawing))
-                        }
+                        
                 }
                 
                 ForEach($textVM.textOverlays) { $overlay in
@@ -70,7 +100,13 @@ struct ImageEditorView: View {
             
             BottomTabBar(
                 viewModel: viewModel,
-                saveAction: { viewModel.saveEditedImage(textOverlays: textVM.textOverlays) },
+                saveAction: {
+                    viewModel.saveEditedImage(
+                        textOverlays: textVM.textOverlays,
+                        scale: imageScale,
+                        rotation: imageRotation + currentRotation
+                    )
+                },
                 undoAction: { viewModel.undoLastAction(textVM: textVM) }
             )
             .frame(maxWidth: .infinity , minHeight: 70)

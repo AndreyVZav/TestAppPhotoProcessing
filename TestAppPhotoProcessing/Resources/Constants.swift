@@ -39,5 +39,7 @@ enum UserDefaultsKey {
     static let isAuthenticated = "isAuthenticated"
     static let userFavorites = "userFavorites"
     static let userSearchTexts = "userSearchTexts"
+    
+    static let rememberedEmail = "rememberedEmail"
 }
 
