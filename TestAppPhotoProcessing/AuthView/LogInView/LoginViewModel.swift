@@ -15,10 +15,11 @@ protocol LoginViewModelDelegate: AnyObject {
 
 final class LoginViewModel: ObservableObject, LoginViewModelDelegate {
     @Published var email: String = ""
+    
     @Published var password: String = ""
     @Published var authSuccess: Bool = false
     @Published var errorMessage: String? = nil
-    
+    @Published var shouldRememberMe: Bool = false
     let googleSignInViewModel: GoogleSignInViewModel
     
     var onLoginSuccess: (() -> Void)?
@@ -26,6 +27,9 @@ final class LoginViewModel: ObservableObject, LoginViewModelDelegate {
     
     private let authService: IAuthService
     private let userDefaultsRepository: IUserDefaultsRepository
+    
+    private let keychain = KeychainService.shared
+    private let rememberMeKey = "rememberedEmail"
     
     init(_ dependencies: IDependencies) {
         self.authService = dependencies.authService
@@ -37,6 +41,26 @@ final class LoginViewModel: ObservableObject, LoginViewModelDelegate {
                     self?.onLoginSuccess?()
                 }
         
+        loadRememberedCredentials() // загружаем email и пароль при старте
+    }
+    
+    func rememberMe() {
+        if shouldRememberMe {
+            keychain.save(password: password, for: email)
+            userDefaultsRepository.setValue(email, forKey: UserDefaultsKey.rememberedEmail)
+        } else {
+            keychain.deletePassword(for: email)
+            userDefaultsRepository.removeValue(forKey: rememberMeKey)
+        }
+    }
+    
+    func loadRememberedCredentials() {
+        if let savedEmail = userDefaultsRepository.getValue(forKey: UserDefaultsKey.rememberedEmail) as? String,
+           let savedPassword = keychain.getPassword(for: savedEmail) {
+            self.email = savedEmail
+            self.password = savedPassword
+            self.shouldRememberMe = true
+        }
     }
     
     func login(email: String, password: String, completion: @escaping (Result<Bool, AuthError>) -> Void) {
@@ -53,6 +77,9 @@ final class LoginViewModel: ObservableObject, LoginViewModelDelegate {
             await MainActor.run {
                 switch result {
                 case .success:
+                    if shouldRememberMe {
+                        rememberMe() // ✅ Сохраняем email + пароль после успешного входа
+                    }
                     self.authSuccess = true
                     self.onLoginSuccess?()
                     completion(.success(true))
