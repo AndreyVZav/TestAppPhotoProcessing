@@ -19,6 +19,8 @@ class ImageEditorViewModel: NSObject, ObservableObject, PKCanvasViewDelegate {
     @Published var actionsStack: [EditAction] = []
     @Published var previousDrawing: PKDrawing = PKDrawing()
     
+    private var isPerformingUndo = false
+    
     enum EditAction {
         case drawing(PKDrawing)
         case text(UUID) // текстовое действие связано с id текста
@@ -31,7 +33,7 @@ class ImageEditorViewModel: NSObject, ObservableObject, PKCanvasViewDelegate {
     }
 
         func canvasViewDrawingDidChange(_ canvasView: PKCanvasView) {
-            guard showDrawing else { return }
+            guard showDrawing, !isPerformingUndo else { return }
             
             if canvasView.drawing != previousDrawing {
                 // Сохраняем действие
@@ -46,7 +48,10 @@ class ImageEditorViewModel: NSObject, ObservableObject, PKCanvasViewDelegate {
         
         switch lastAction {
         case .drawing(let previousDrawing):
+            isPerformingUndo = true
             canvasView.drawing = previousDrawing
+            self.previousDrawing = previousDrawing // Сохраняем актуальный previousDrawing после отмены
+            isPerformingUndo = false
         case .text(let textID):
             if let index = textVM.textOverlays.firstIndex(where: { $0.id == textID }) {
                 textVM.textOverlays.remove(at: index)
