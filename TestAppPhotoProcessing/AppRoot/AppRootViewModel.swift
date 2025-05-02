@@ -9,6 +9,8 @@ import Combine
 
 class AppRootViewModel: ObservableObject {
     @Published var isAuthenticated = false
+    @Published var isLoading = true
+    
     let authContainerViewModel: AuthContainerViewModel
     let imageEditorViewModel = ImageEditorViewModel()
     
@@ -25,6 +27,13 @@ class AppRootViewModel: ObservableObject {
         self.authContainerViewModel.onAuthSuccess = { [weak self] in
             self?.setAuthenticated(true)
         }
+        
+        // Симуляция проверки авторизации (например, из Keychain)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+            // здесь могла бы быть реальная проверка
+            self.isLoading = false
+        }
+        
     }
     
     func setAuthenticated(_ isAuthenticated: Bool) {
