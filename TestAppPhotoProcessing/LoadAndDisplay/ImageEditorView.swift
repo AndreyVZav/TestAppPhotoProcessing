@@ -31,7 +31,7 @@ struct ImageEditorView: View {
             
             
             ZStack {
-                if let image = viewModel.selectedImage {
+                if let image = viewModel.filteredImage ?? viewModel.selectedImage {
                     Image(uiImage: image)
                         .resizable()
                         .scaledToFit()
@@ -63,6 +63,8 @@ struct ImageEditorView: View {
                     
                 }
                 
+                
+                
                 if viewModel.showDrawing {
                     DrawingCanvasView(canvasView: $viewModel.canvasView)
                         .frame(height: geometry.size.height * 0.6)
@@ -80,11 +82,24 @@ struct ImageEditorView: View {
                 
             }
             .overlay(alignment: .bottom) {
-                VStack(spacing: 8) {
+                VStack(spacing: 12) {
                     Button("Добавить текст") {
                         let newOverlay = textVM.addTextOverlay()
                         viewModel.actionsStack.append(.text(newOverlay.id))
                     }
+                    
+                    Button("Выбрать фильтр") {
+                        viewModel.isShowFilter = true
+                    }
+                    
+                    if viewModel.isShowFilter {
+                        FilterControlsView(
+                            inputImage: $viewModel.selectedImage,
+                            filteredImage: $viewModel.filteredImage,
+                            isVisible: $viewModel.isShowFilter
+                        )
+                    }
+                    
                     if let id = selectedTextID,
                        let index = textVM.textOverlays.firstIndex(where: { $0.id == id }) {
                         TextEditorControlsView(
@@ -114,6 +129,11 @@ struct ImageEditorView: View {
         }
         .sheet(isPresented: $viewModel.showImagePicker) {
             ImagePicker(selectedImage: $viewModel.selectedImage, sourceType: viewModel.sourceType)
+        }
+        .sheet(isPresented: $viewModel.showExportSheet) {
+            if let imageToExport = viewModel.filteredImage ?? viewModel.selectedImage {
+                ImageExportView(image: imageToExport)
+            }
         }
         .alert(isPresented: $viewModel.showSaveAlert) {
             Alert(
