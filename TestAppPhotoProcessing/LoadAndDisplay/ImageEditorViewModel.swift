@@ -21,6 +21,10 @@ class ImageEditorViewModel: NSObject, ObservableObject, PKCanvasViewDelegate {
     
     private var isPerformingUndo = false
     
+    @Published var showExportSheet = false
+    @Published var filteredImage: UIImage?
+    @Published var isShowFilter: Bool = false
+    
     enum EditAction {
         case drawing(PKDrawing)
         case text(UUID) // текстовое действие связано с id текста

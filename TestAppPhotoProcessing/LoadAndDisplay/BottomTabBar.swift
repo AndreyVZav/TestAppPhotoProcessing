@@ -58,6 +58,15 @@ struct BottomTabBar: View {
                     .foregroundColor(.red)
             }
             .frame(maxWidth: .infinity)
+            
+            Button(action: {
+                viewModel.showExportSheet = true
+            }) {
+                Image(systemName: "square.and.arrow.up")
+            }
+            .frame(maxWidth: .infinity)
+            
+            
         }
         .padding()
         .frame(maxWidth: .infinity)
