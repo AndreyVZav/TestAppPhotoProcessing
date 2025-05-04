@@ -11,11 +11,22 @@ struct AppRootView: View {
 
     var body: some View {
         GeometryReader { geometry in
-            NavigationStack {
-                if viewModel.isAuthenticated {
-                    ImageEditorView(viewModel: viewModel.imageEditorViewModel, geometry: geometry)
-                } else {
-                    AuthContainerView(viewModel: viewModel.authContainerViewModel)
+            
+            if viewModel.isLoading {
+                ZStack {
+                    Color(.systemBackground).ignoresSafeArea()
+                    ProgressView("Загрузка...")
+                        .progressViewStyle(CircularProgressViewStyle())
+                        .font(.headline)
+                }
+            } else {
+                
+                NavigationStack {
+                    if viewModel.isAuthenticated {
+                        ImageEditorView(viewModel: viewModel.imageEditorViewModel, geometry: geometry)
+                    } else {
+                        AuthContainerView(viewModel: viewModel.authContainerViewModel)
+                    }
                 }
             }
         }
