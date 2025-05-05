@@ -42,9 +42,6 @@ struct MainLoginContent: View {
                     .padding(.bottom, 10)
             }
             
-            ActionButtons(viewModel: viewModel, height: height)
-            
-            
             HStack {
                 Toggle(isOn: $viewModel.shouldRememberMe) {}
                     .labelsHidden()
@@ -55,6 +52,11 @@ struct MainLoginContent: View {
                     .applyFont(.inter , .regular, 14)
                     .foregroundColor(.black)
             }
+            
+            ActionButtons(viewModel: viewModel, height: height)
+            
+            
+            
             
            
         }

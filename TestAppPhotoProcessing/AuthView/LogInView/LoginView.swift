@@ -13,15 +13,12 @@ struct LoginView: View {
     
     var body: some View {
         GeometryReader { geometry in
-            ZStack {
+ 
                 BackgroundDecorations(geometry: geometry)
                 
-            }
-            HStack(alignment:.bottom) {
                 MainLoginContent(viewModel: viewModel, geometry: geometry)
-            }
-            
         }
+        
     }
 }
 
