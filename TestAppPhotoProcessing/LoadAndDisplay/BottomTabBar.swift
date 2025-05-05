@@ -52,7 +52,7 @@ struct BottomTabBar: View {
             .frame(maxWidth: .infinity)
             
             Button(action: {
-                viewModel.exitApp()
+               
             }) {
                 Image(systemName: "xmark.circle")
                     .foregroundColor(.red)
@@ -64,6 +64,7 @@ struct BottomTabBar: View {
             }) {
                 Image(systemName: "square.and.arrow.up")
             }
+            .disabled(viewModel.filteredImage == nil && viewModel.selectedImage == nil)
             .frame(maxWidth: .infinity)
             
             

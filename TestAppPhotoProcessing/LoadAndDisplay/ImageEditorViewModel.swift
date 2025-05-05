@@ -63,10 +63,6 @@ class ImageEditorViewModel: NSObject, ObservableObject, PKCanvasViewDelegate {
         }
     }
     
-    func exitApp() {
-        exit(0)
-    }
-    
     
     func saveEditedImage(textOverlays: [TextOverlay], scale: CGFloat, rotation: Angle) {
         guard let baseImage = selectedImage else { return }
