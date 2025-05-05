@@ -57,5 +57,5 @@ struct CustomTextFieldView: View{
     }
 }
 #Preview{
-    CustomTextFieldView(credentials: .constant(""), color: .textField, textFieldTitle: "Email")
+    CustomTextFieldView(credentials: .constant(""), color: .textField, textFieldTitle: Constants.email)
 }

@@ -23,7 +23,7 @@ struct ImageEditorView: View {
     
     var body: some View {
         VStack(spacing: 20) {
-            Text("Photo Editor")
+            Text(Constants.photoEditor)
                 .font(.largeTitle)
                 .bold()
                 .padding(.top)
@@ -137,9 +137,9 @@ struct ImageEditorView: View {
         }
         .alert(isPresented: $viewModel.showSaveAlert) {
             Alert(
-                title: Text(viewModel.saveSuccess ? "Saved!" : "Error"),
-                message: Text(viewModel.saveSuccess ? "Image saved to Photos." : "Failed to save image."),
-                dismissButton: .default(Text("OK"))
+                title: Text(viewModel.saveSuccess ? Constants.savedString : Constants.errorString),
+                message: Text(viewModel.saveSuccess ? Constants.imageSavedToPhotos : Constants.failedToSaveImage),
+                dismissButton: .default(Text(Constants.okString))
             )
         }
         .padding()

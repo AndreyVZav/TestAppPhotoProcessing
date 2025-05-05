@@ -16,7 +16,7 @@ struct MainLoginContent: View {
             CustomTextFieldView(
                 credentials: $viewModel.email,
                 color: .textField,
-                textFieldTitle: "Email",
+                textFieldTitle: Constants.email,
                 isSecure: false
             )
             .padding(.bottom, viewModel.email.isEmpty ? 30 : 12)
@@ -25,7 +25,7 @@ struct MainLoginContent: View {
                 CustomTextFieldView(
                     credentials: $viewModel.password,
                     color: .textField,
-                    textFieldTitle: "Password",
+                    textFieldTitle: Constants.password,
                     isSecure: true
                 )
                 .padding(.bottom, 20)
@@ -44,7 +44,7 @@ struct MainLoginContent: View {
                     .tint(.yellow)
                     .padding(.trailing)
                 
-                Text("remember Me")
+                Text(Constants.rememberMe)
                     .applyFont(.inter , .regular, 14)
                     .foregroundColor(.black)
             }

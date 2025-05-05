@@ -15,6 +15,19 @@ enum Constants {
     static let signUp = "Create Account"
     static let LogIn = "Login"
     static let LogInSubTitle = "Good to see you back! "
+    static let cancel = "Cancel"
+    static let rememberMe = "Remember Me"
+    static let email = "Email"
+    static let password = "Password"
+    static let signInWithGoogle = "Sign in with Google"
+    static let imageFilter = "Image filter"
+    static let photoEditor = "Photo Editor"
+    static let savedString = "Saved!"
+    static let errorString = "Error"
+    static let imageSavedToPhotos = "Image saved to Photos."
+    static let failedToSaveImage = "Failed to save image."
+   
+    
 }
 
 enum ImageName {

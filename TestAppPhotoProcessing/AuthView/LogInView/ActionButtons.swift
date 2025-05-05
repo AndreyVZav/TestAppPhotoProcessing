@@ -26,7 +26,7 @@ struct ActionButtons: View {
             Button(action: {
                 viewModel.onCancelTapped?()
             }) {
-                Text("Cancel")
+                Text(Constants.cancel)
                     .applyFont(.nunitoSans, .light, 15)
                     .foregroundColor(.mainBlack)
             }

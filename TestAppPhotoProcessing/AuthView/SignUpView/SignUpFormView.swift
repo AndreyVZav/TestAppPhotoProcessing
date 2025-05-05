@@ -16,13 +16,13 @@ struct SignUpFormView: View {
                 CustomTextFieldView(
                     credentials: $viewModel.email,
                     color: .textField,
-                    textFieldTitle: "Email",
+                    textFieldTitle: Constants.email,
                     isSecure: false
                 )
                 CustomTextFieldView(
                     credentials: $viewModel.password,
                     color: .textField,
-                    textFieldTitle: "Password",
+                    textFieldTitle: Constants.password,
                     isSecure: true
                 )
             }
@@ -41,7 +41,7 @@ struct SignUpFormView: View {
             Button(action: {
                 viewModel.onCancelTapped?()
             }) {
-                Text("Cancel")
+                Text(Constants.cancel)
                     .applyFont(.nunitoSans, .light, 15)
                     .foregroundColor(.mainBlack)
             }

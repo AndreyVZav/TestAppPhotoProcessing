@@ -25,7 +25,7 @@ struct FilterControlsView: View {
     
     var body: some View {
         VStack(spacing: 16) {
-            Text("Фильтр изображения")
+            Text(Constants.imageFilter)
                 .font(.headline)
             
             ScrollView(.horizontal, showsIndicators: false) {

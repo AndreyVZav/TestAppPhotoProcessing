@@ -23,7 +23,7 @@ struct GoogleSignInButton: View {
         }) {
             HStack {
                 Image(systemName: "globe")
-                Text("Sign in with Google")
+                Text(Constants.signInWithGoogle)
                     .bold()
             }
             .padding()
