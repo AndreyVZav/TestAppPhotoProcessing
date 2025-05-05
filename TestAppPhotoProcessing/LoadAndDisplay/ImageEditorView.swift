@@ -127,7 +127,7 @@ struct ImageEditorView: View {
             .frame(maxWidth: .infinity , minHeight: 70)
             
         }
-        .sheet(isPresented: $viewModel.showImagePicker) {
+        .fullScreenCover(isPresented: $viewModel.showImagePicker) {
             ImagePicker(selectedImage: $viewModel.selectedImage, sourceType: viewModel.sourceType)
         }
         .sheet(isPresented: $viewModel.showExportSheet) {
