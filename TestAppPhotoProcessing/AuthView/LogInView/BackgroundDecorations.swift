@@ -9,10 +9,10 @@ import SwiftUICore
 
 struct BackgroundDecorations: View {
     let geometry: GeometryProxy
+    private var width: CGFloat { geometry.size.width }
+    private var height: CGFloat { geometry.size.height }
     
     var body: some View {
-        let width = geometry.size.width
-        let height = geometry.size.height
         
         ZStack {
             Image(ImageName.grayLogBubble)
