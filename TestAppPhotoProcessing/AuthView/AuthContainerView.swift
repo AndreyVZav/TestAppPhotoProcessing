@@ -19,8 +19,7 @@ struct AuthContainerView: View {
             }
             
             GoogleSignInButton(
-                viewModel: GoogleSignInViewModel(),
-                onAuthSuccess: viewModel.onAuthSuccess ?? {}
+                viewModel: viewModel.googleSignInViewModel
             )
             
         }

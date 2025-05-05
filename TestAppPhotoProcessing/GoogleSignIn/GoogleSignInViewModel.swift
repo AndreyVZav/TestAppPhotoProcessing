@@ -11,41 +11,50 @@ import FirebaseAuth
 import FirebaseCore
 import UIKit
 
-
 final class GoogleSignInViewModel: ObservableObject {
-    var onSuccess: (() -> Void) = {}
+    @Published var showErrorAlert = false
+    @Published var errorMessage: String = ""
+    var onSuccess: () -> Void = {}
     
-    func signInWithGoogle(presenting viewController: UIViewController, completion: @escaping (Result<AuthDataResult, Error>) -> Void) {
+    func signInWithGoogle(presenting viewController: UIViewController) {
         guard let clientID = FirebaseApp.app()?.options.clientID else {
-            completion(.failure(NSError(domain: "Auth", code: -1, userInfo: [NSLocalizedDescriptionKey: "Не удалось получить Client ID"])))
+            handleError("Не удалось получить Client ID")
             return
         }
-
+        
         let config = GIDConfiguration(clientID: clientID)
         GIDSignIn.sharedInstance.configuration = config
-
+        
         GIDSignIn.sharedInstance.signIn(withPresenting: viewController) { result, error in
             if let error = error {
-                completion(.failure(error))
+                self.handleError(error.localizedDescription)
                 return
             }
-
+            
             guard let user = result?.user,
                   let idToken = user.idToken?.tokenString else {
-                completion(.failure(NSError(domain: "Auth", code: -1, userInfo: [NSLocalizedDescriptionKey: "Не удалось получить токен"])))
+                self.handleError("Не удалось получить токен")
                 return
             }
-
+            
             let credential = GoogleAuthProvider.credential(withIDToken: idToken, accessToken: user.accessToken.tokenString)
-
-            Auth.auth().signIn(with: credential) { authResult, error in
+            
+            Auth.auth().signIn(with: credential) { _ , error in
                 if let error = error {
-                    completion(.failure(error))
-                } else if let authResult = authResult {
-                    completion(.success(authResult))
+                    self.handleError(error.localizedDescription)
+                } else {
+                    self.onSuccess()
                 }
             }
         }
     }
+    
+    private func handleError(_ message: String) {
+        DispatchQueue.main.async {
+            self.errorMessage = message
+            self.showErrorAlert = true
+        }
+    }
+    
 }
 
