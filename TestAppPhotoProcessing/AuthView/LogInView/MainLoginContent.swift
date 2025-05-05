@@ -8,14 +8,10 @@ import SwiftUI
 
 struct MainLoginContent: View {
     @ObservedObject var viewModel: LoginViewModel
-    let geometry: GeometryProxy
     
     var body: some View {
-        let width = geometry.size.width
-        let height = geometry.size.height
-        
         VStack(alignment: .leading) {
-            HeaderSection(width: width, height: height)
+            HeaderSection(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
             
             CustomTextFieldView(
                 credentials: $viewModel.email,
@@ -23,7 +19,7 @@ struct MainLoginContent: View {
                 textFieldTitle: "Email",
                 isSecure: false
             )
-            .padding(.bottom, viewModel.email.isEmpty ? height * 0.05 : height * 0.02)
+            .padding(.bottom, viewModel.email.isEmpty ? 30 : 12)
             
             if !viewModel.email.isEmpty {
                 CustomTextFieldView(
@@ -32,7 +28,7 @@ struct MainLoginContent: View {
                     textFieldTitle: "Password",
                     isSecure: true
                 )
-                .padding(.bottom, height * 0.03)
+                .padding(.bottom, 20)
             }
             
             if let errorMessage = viewModel.errorMessage {
@@ -53,14 +49,12 @@ struct MainLoginContent: View {
                     .foregroundColor(.black)
             }
             
-            ActionButtons(viewModel: viewModel, height: height)
+            ActionButtons(viewModel: viewModel, height: 200)
             
             
-            
-            
-           
         }
-        .frame(width: width)
+        .padding(.horizontal, 16)
+        .frame(maxWidth: .infinity)
     }
 }
 

@@ -13,10 +13,10 @@ struct LoginView: View {
     
     var body: some View {
         GeometryReader { geometry in
- 
-                BackgroundDecorations(geometry: geometry)
-                
-                MainLoginContent(viewModel: viewModel, geometry: geometry)
+            
+            BackgroundDecorations(geometry: geometry)
+            
+            MainLoginContent(viewModel: viewModel)
         }
         
     }
