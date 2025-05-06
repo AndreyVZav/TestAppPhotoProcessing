@@ -43,7 +43,7 @@ struct BottomTabBar: View {
             .frame(maxWidth: .infinity)
             
             Button(action: {
-                viewModel.undoAction()
+                viewModel.undoLastAction()
             }) {
                 Image(systemName: "arrow.uturn.backward")
             }

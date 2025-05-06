@@ -32,7 +32,6 @@ struct DrawingCanvasView: UIViewRepresentable {
     
     class Coordinator: NSObject, PKCanvasViewDelegate {
         var parent: DrawingCanvasView
-        private var isPerformingUndo = false
         
         init(_ parent: DrawingCanvasView) {
             self.parent = parent

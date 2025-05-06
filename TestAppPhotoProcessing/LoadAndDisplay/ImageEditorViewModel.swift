@@ -7,7 +7,7 @@
 import SwiftUI
 import PencilKit
 
-class ImageEditorViewModel: NSObject, ObservableObject, PKCanvasViewDelegate {
+class ImageEditorViewModel: NSObject, ObservableObject {
     @Published var selectedImage: UIImage?
     @Published var showImagePicker = false
     @Published var sourceType: UIImagePickerController.SourceType = .photoLibrary
@@ -26,7 +26,7 @@ class ImageEditorViewModel: NSObject, ObservableObject, PKCanvasViewDelegate {
     @Published var isShowFilter: Bool = false
     
     @Published var textOverlays: [TextOverlay] = []
-    @Published var selectedID: UUID?
+    
     
     enum EditAction {
         case drawing(PKDrawing)
@@ -35,10 +35,6 @@ class ImageEditorViewModel: NSObject, ObservableObject, PKCanvasViewDelegate {
     
     func saveAction(scale: CGFloat, rotation: Angle) {
         saveEditedImage(textOverlays: textOverlays, scale: scale, rotation: rotation)
-    }
-    
-    func undoAction() {
-        undoLastAction()
     }
     
     func tapPhotoLibrary() {
@@ -67,7 +63,6 @@ class ImageEditorViewModel: NSObject, ObservableObject, PKCanvasViewDelegate {
         actionsStack.removeAll()
         textOverlays.removeAll()
         previousDrawing = PKDrawing()
-        selectedID = nil
         showDrawing = false
     }
     
@@ -87,10 +82,6 @@ class ImageEditorViewModel: NSObject, ObservableObject, PKCanvasViewDelegate {
         if let index = textOverlays.firstIndex(where: { $0.id == overlay.id }) {
             textOverlays[index].text = newText
         }
-    }
-    
-    func tapOverlay(withID id: UUID) {
-        selectedID = id
     }
     
     func registerDrawingChange(currentDrawing: PKDrawing) {
