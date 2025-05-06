@@ -115,14 +115,8 @@ struct ImageEditorView: View {
             
             BottomTabBar(
                 viewModel: viewModel,
-                saveAction: {
-                    viewModel.saveEditedImage(
-                        textOverlays: viewModel.textOverlays,
-                        scale: imageScale,
-                        rotation: imageRotation + currentRotation
-                    )
-                },
-                undoAction: { viewModel.undoLastAction() }
+                imageScale: imageScale * currentMagnification,
+                imageRotation: imageRotation + currentRotation
             )
             .frame(maxWidth: .infinity , minHeight: 70)
             

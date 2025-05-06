@@ -33,6 +33,43 @@ class ImageEditorViewModel: NSObject, ObservableObject, PKCanvasViewDelegate {
         case text(UUID) // текстовое действие связано с id текста
     }
     
+    func saveAction(scale: CGFloat, rotation: Angle) {
+        saveEditedImage(textOverlays: textOverlays, scale: scale, rotation: rotation)
+    }
+    
+    func undoAction() {
+        undoLastAction()
+    }
+    
+    func tapPhotoLibrary() {
+        sourceType = .photoLibrary
+        showImagePicker = true
+    }
+    
+    func tapCamera() {
+        sourceType = .camera
+        showImagePicker = true
+    }
+    
+    func toggleDrawing() {
+        showDrawing.toggle()
+    }
+    
+    func tapExport() {
+        showExportSheet = true
+    }
+
+    func clearAll() {
+        //selectedImage = nil
+        filteredImage = nil
+        canvasView.drawing = PKDrawing()
+        drawingUndoStack.removeAll()
+        actionsStack.removeAll()
+        textOverlays.removeAll()
+        previousDrawing = PKDrawing()
+        selectedID = nil
+        showDrawing = false
+    }
     
     func addTextOverlay() -> TextOverlay {
         let newText = TextOverlay(

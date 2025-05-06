@@ -8,51 +8,49 @@ import SwiftUI
 
 struct BottomTabBar: View {
     @ObservedObject var viewModel: ImageEditorViewModel
-    var saveAction: () -> Void
-    var undoAction: () -> Void
+    let imageScale: CGFloat
+    let imageRotation: Angle
     
     var body: some View {
         HStack {
     
             Button(action: {
-                viewModel.sourceType = .photoLibrary
-                viewModel.showImagePicker = true
+                viewModel.tapPhotoLibrary()
             }) {
                 Image(systemName: "photo.on.rectangle")
             }
             .frame(maxWidth: .infinity)
             
             Button(action: {
-                viewModel.sourceType = .camera
-                viewModel.showImagePicker = true
+                viewModel.tapCamera()
             }) {
                 Image(systemName: "camera")
             }
             .frame(maxWidth: .infinity)
             
             Button(action: {
-                viewModel.showDrawing.toggle()
+                viewModel.toggleDrawing()
             }) {
                 Image(systemName: "pencil.tip")
             }
             .frame(maxWidth: .infinity)
             
             Button(action: {
-                saveAction()
+                viewModel.saveAction(scale: imageScale, rotation: imageRotation)
             }) {
                 Image(systemName: "square.and.arrow.down")
             }
             .frame(maxWidth: .infinity)
             
             Button(action: {
-                undoAction()
+                viewModel.undoAction()
             }) {
                 Image(systemName: "arrow.uturn.backward")
             }
             .frame(maxWidth: .infinity)
             
             Button(action: {
-               
+                viewModel.clearAll()
             }) {
                 Image(systemName: "xmark.circle")
                     .foregroundColor(.red)
@@ -60,7 +58,7 @@ struct BottomTabBar: View {
             .frame(maxWidth: .infinity)
             
             Button(action: {
-                viewModel.showExportSheet = true
+                viewModel.tapExport()
             }) {
                 Image(systemName: "square.and.arrow.up")
             }
