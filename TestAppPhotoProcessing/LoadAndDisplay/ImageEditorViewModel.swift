@@ -25,44 +25,62 @@ class ImageEditorViewModel: NSObject, ObservableObject, PKCanvasViewDelegate {
     @Published var filteredImage: UIImage?
     @Published var isShowFilter: Bool = false
     
+    @Published var textOverlays: [TextOverlay] = []
+    @Published var selectedID: UUID?
+    
     enum EditAction {
         case drawing(PKDrawing)
         case text(UUID) // текстовое действие связано с id текста
     }
     
     
-    override init() {
-        super.init()
-        canvasView.delegate = self
+    func addTextOverlay() -> TextOverlay {
+        let newText = TextOverlay(
+            text: "Новый текст",
+            fontSize: 24,
+            fontName: "Helvetica",
+            textColor: .black,
+            position: CGPoint(x: 150, y: 150)
+        )
+        textOverlays.append(newText)
+        return newText
     }
-
-        func canvasViewDrawingDidChange(_ canvasView: PKCanvasView) {
-            guard showDrawing, !isPerformingUndo else { return }
-            
-            if canvasView.drawing != previousDrawing {
-                // Сохраняем действие
-                actionsStack.append(.drawing(previousDrawing))
-                previousDrawing = canvasView.drawing
-            }
+    
+    func updateText(_ overlay: TextOverlay, newText: String) {
+        if let index = textOverlays.firstIndex(where: { $0.id == overlay.id }) {
+            textOverlays[index].text = newText
         }
+    }
     
+    func tapOverlay(withID id: UUID) {
+        selectedID = id
+    }
     
-    func undoLastAction(textVM: TextEditorViewModel) {
+    func registerDrawingChange(currentDrawing: PKDrawing) {
+        guard showDrawing, !isPerformingUndo else { return }
+        if currentDrawing != previousDrawing {
+            actionsStack.append(.drawing(previousDrawing))
+            drawingUndoStack.append(previousDrawing)
+            previousDrawing = currentDrawing
+        }
+    }
+    
+    func undoLastAction() {
         guard let lastAction = actionsStack.popLast() else { return }
         
         switch lastAction {
-        case .drawing(let previousDrawing):
+        case .drawing:
+            guard let previousDrawing = drawingUndoStack.popLast() else { return }
             isPerformingUndo = true
             canvasView.drawing = previousDrawing
             self.previousDrawing = previousDrawing // Сохраняем актуальный previousDrawing после отмены
             isPerformingUndo = false
         case .text(let textID):
-            if let index = textVM.textOverlays.firstIndex(where: { $0.id == textID }) {
-                textVM.textOverlays.remove(at: index)
+            if let index = textOverlays.firstIndex(where: { $0.id == textID }) {
+                textOverlays.remove(at: index)
             }
         }
     }
-    
     
     func saveEditedImage(textOverlays: [TextOverlay], scale: CGFloat, rotation: Angle) {
         guard let baseImage = selectedImage else { return }

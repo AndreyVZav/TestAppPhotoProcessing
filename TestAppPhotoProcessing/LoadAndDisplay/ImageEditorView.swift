@@ -9,7 +9,6 @@ import PencilKit
 
 struct ImageEditorView: View {
     @ObservedObject var viewModel: ImageEditorViewModel
-    @StateObject private var textVM = TextEditorViewModel()
     @State private var selectedTextID: UUID?
     
     let geometry: GeometryProxy
@@ -27,8 +26,6 @@ struct ImageEditorView: View {
                 .font(.largeTitle)
                 .bold()
                 .padding(.top)
-            
-            
             
             ZStack {
                 if let image = viewModel.filteredImage ?? viewModel.selectedImage {
@@ -60,20 +57,23 @@ struct ImageEditorView: View {
                         .cornerRadius(16)
                         .shadow(radius: 8)
                     
+                }
+                
+                if viewModel.showDrawing {
+                    DrawingCanvasView(
+                        canvasView: $viewModel.canvasView,
+                        showDrawing: $viewModel.showDrawing,
+                        actionsStack: $viewModel.actionsStack,
+                        previousDrawing: $viewModel.previousDrawing,
+                        viewModel: viewModel
+                    )
+                    .frame(height: geometry.size.height * 0.6)
+                    .cornerRadius(16)
+                    .shadow(radius: 8)
                     
                 }
                 
-                
-                
-                if viewModel.showDrawing {
-                    DrawingCanvasView(canvasView: $viewModel.canvasView)
-                        .frame(height: geometry.size.height * 0.6)
-                        .cornerRadius(16)
-                        .shadow(radius: 8)
-                        
-                }
-                
-                ForEach($textVM.textOverlays) { $overlay in
+                ForEach($viewModel.textOverlays) { $overlay in
                     EditableTextOverlayView(overlay: $overlay)
                         .onTapGesture {
                             selectedTextID = overlay.id
@@ -84,7 +84,7 @@ struct ImageEditorView: View {
             .overlay(alignment: .bottom) {
                 VStack(spacing: 12) {
                     Button("Добавить текст") {
-                        let newOverlay = textVM.addTextOverlay()
+                        let newOverlay = viewModel.addTextOverlay()
                         viewModel.actionsStack.append(.text(newOverlay.id))
                     }
                     
@@ -101,9 +101,9 @@ struct ImageEditorView: View {
                     }
                     
                     if let id = selectedTextID,
-                       let index = textVM.textOverlays.firstIndex(where: { $0.id == id }) {
+                       let index = viewModel.textOverlays.firstIndex(where: { $0.id == id }) {
                         TextEditorControlsView(
-                            selectedText: $textVM.textOverlays[index],
+                            selectedText: $viewModel.textOverlays[index],
                             selectedTextID: $selectedTextID
                         )
                     }
@@ -117,12 +117,12 @@ struct ImageEditorView: View {
                 viewModel: viewModel,
                 saveAction: {
                     viewModel.saveEditedImage(
-                        textOverlays: textVM.textOverlays,
+                        textOverlays: viewModel.textOverlays,
                         scale: imageScale,
                         rotation: imageRotation + currentRotation
                     )
                 },
-                undoAction: { viewModel.undoLastAction(textVM: textVM) }
+                undoAction: { viewModel.undoLastAction() }
             )
             .frame(maxWidth: .infinity , minHeight: 70)
             
