@@ -11,15 +11,7 @@ struct GoogleSignInButton: View {
     
     var body: some View {
         Button(action: {
-            guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-                  let rootViewController = windowScene.windows.first?.rootViewController else {
-                viewModel.errorMessage = "Не удалось получить UIViewController"
-                viewModel.showErrorAlert = true
-                return
-            }
-            
-            viewModel.signInWithGoogle(presenting: rootViewController)
-            
+            viewModel.startGoogleSignInFlow()
         }) {
             HStack {
                 Image(systemName: "globe")

@@ -16,6 +16,14 @@ final class GoogleSignInViewModel: ObservableObject {
     @Published var errorMessage: String = ""
     var onSuccess: () -> Void = {}
     
+    func startGoogleSignInFlow() {
+        guard let rootVC = UIApplication.rootViewController else {
+            handleError("Не удалось получить UIViewController")
+            return
+        }
+        signInWithGoogle(presenting: rootVC)
+    }
+    
     func signInWithGoogle(presenting viewController: UIViewController) {
         guard let clientID = FirebaseApp.app()?.options.clientID else {
             handleError("Не удалось получить Client ID")
